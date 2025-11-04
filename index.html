@@ -70,9 +70,22 @@
     </video>
   </div>
 </div>
-<div id="loadingText" style="display:none; position:fixed; inset:0; background:black; color:white; align-items:center; justify-content:center;">Loading video...</div>
-
-  
+<div id="loadingOverlay" style="
+  display:none;
+  position:fixed;inset:0;
+  background:black;
+  color:white;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  font-family:'Inter',sans-serif;
+  z-index:9999;">
+  <div id="loadingText" style="margin-bottom:15px;">Loading video...</div>
+  <div style="width:70%;height:10px;background:#222;border-radius:5px;overflow:hidden;">
+    <div id="progressBar" style="width:0%;height:100%;background:#ffb3d9;transition:width 0.2s;"></div>
+  </div>
+</div>
+ 
 <!-- FINAL SLIDES -->
 <div id="finalWrap" class="finalwrap">
   <div class="finalCard">
@@ -114,12 +127,15 @@
   <source src="song.mp3" type="audio/mpeg">
 </audio>
 
-<script>
-const introWrap = document.getElementById('introWrap');
+<script>const introWrap = document.getElementById('introWrap');
 const countNum = document.getElementById('countNum');
 const videoSection = document.getElementById('videoSection');
 const introVideo = document.getElementById('introVideo');
 const countAudio = document.getElementById('countAudio');
+const loadingOverlay = document.getElementById('loadingOverlay');
+const progressBar = document.getElementById('progressBar');
+const loadingText = document.getElementById('loadingText');
+
 const finalSlides = [
   document.getElementById('finalWrap'),
   document.getElementById('finalWrap2'),
@@ -149,30 +165,53 @@ function runCountdown(){
     }
   },1000);
 }
+
 function startVideo(){
   gsap.to(introWrap,{opacity:0,duration:0.8,onComplete:()=>{
     introWrap.style.display='none';
     videoSection.style.display='flex';
     gsap.fromTo(videoSection,{opacity:0},{opacity:1,duration:1});
+    showLoading();
 
-    // Pastikan video sudah bisa diputar
-    introVideo.load(); // memulai preload
+    introVideo.load();
     introVideo.addEventListener('canplaythrough', () => {
+      hideLoading();
       introVideo.play().catch(e=>console.warn(e));
     }, { once:true });
   }});
 }
 
+// ✅ Progress bar update
+introVideo.addEventListener('progress', ()=>{
+  if (introVideo.buffered.length > 0 && introVideo.duration > 0) {
+    const bufferedEnd = introVideo.buffered.end(introVideo.buffered.length - 1);
+    const percent = (bufferedEnd / introVideo.duration) * 100;
+    progressBar.style.width = percent + '%';
+    loadingText.textContent = `Loading video... ${Math.round(percent)}%`;
+  }
+});
+
+introVideo.addEventListener('waiting', showLoading);
+introVideo.addEventListener('playing', hideLoading);
+
 introVideo.addEventListener('ended', ()=>{
   gsap.to(videoSection,{opacity:0,duration:1,onComplete:()=>{
     videoSection.style.display='none';
-    // putar lagu setelah video selesai
     countAudio.currentTime = 0;
     countAudio.play().catch(e => console.warn(e));
     playFinalSlides(0);
   }});
 });
 
+function showLoading(){
+  loadingOverlay.style.display = 'flex';
+  progressBar.style.width = '0%';
+  loadingText.textContent = 'Loading video...';
+}
+
+function hideLoading(){
+  loadingOverlay.style.display = 'none';
+}
 
 function playFinalSlides(index){
   if(index >= finalSlides.length) return;
@@ -184,9 +223,8 @@ function playFinalSlides(index){
       slide.style.display='none';
       playFinalSlides(index+1);
     }});
-  },4000); // tiap slide 4 detik
-}introVideo.addEventListener('waiting', ()=> loadingText.style.display='flex');
-introVideo.addEventListener('playing', ()=> loadingText.style.display='none');
+  },6000);
+}
 
 </script>
 </body>
