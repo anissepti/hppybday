@@ -4,216 +4,340 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Untuk Yang — Film Pendek Ulang Tahun</title>
-  <meta name="description" content="Cinematic birthday page untuk Devit — auto-play video intro + slideshow photos dengan narasi lembut." />
+  <meta name="description" content="Cinematic birthday: countdown -> intro video -> memories collage -> ucapan & doa." />
+  <!-- GSAP for smooth cinematic animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <style>
     :root{
-      --bg:#060712;
-      --accent:#9be7ff;
+      --bg:#050613;
+      --panel:rgba(255,255,255,0.03);
       --muted:#9aa8b3;
+      --accent:#9be7ff;
       --warm:#ffb4c6;
-      --film-tone: rgba(0,0,0,0.45);
-      --text: #eaf6ff;
+      --card:#071029;
+      --text:#e9f6ff;
     }
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;background:linear-gradient(180deg,#02030a 0%,#071029 60%);font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;color:var(--text)}
-    /* frame */
-    .stage{position:relative;overflow:hidden;height:100vh;width:100vw;display:flex;align-items:center;justify-content:center}
-
-    /* opening video full screen */
-    #intro{position:absolute;inset:0;background:black;display:flex;align-items:center;justify-content:center;z-index:50}
-    #intro video{width:100%;height:100%;object-fit:cover}
-
-    /* cinematic overlay for title */
-    .overlay{position:absolute;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:flex-start;padding:5vh 8vw;pointer-events:none}
-    .titleCard{backdrop-filter: blur(6px);background:linear-gradient(180deg, rgba(2,6,23,0.25), rgba(2,6,23,0.45));padding:18px 22px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);max-width:720px;opacity:0;transform:translateY(12px);transition:all .9s ease}
-    .titleCard.show{opacity:1;transform:translateY(0)}
-    .titleCard h1{margin:0;font-size:28px;letter-spacing:0.2px}
-    .titleCard p{margin:6px 0 0;color:var(--muted)}
-
-    /* slideshow container */
-    #slideshow{position:absolute;inset:0;z-index:40;display:none;align-items:center;justify-content:center}
-    .slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none}
-    .slide.active{opacity:1;pointer-events:auto}
-    .slide img{width:100%;height:100%;object-fit:cover;filter:contrast(.95) saturate(.95)}
-
-    /* ken burns effect */
-    .ken{transform-origin:center center;animation:kenburns 18s ease-in-out forwards}
-    @keyframes kenburns{0%{transform:scale(1.06) translateY(0)}100%{transform:scale(1.18) translateY(-6px)}}
-
-    /* caption */
-    .caption{position:absolute;left:8vw;bottom:10vh;max-width:60vw;background:linear-gradient(180deg, rgba(0,0,0,0.28), rgba(0,0,0,0.18));padding:14px 18px;border-radius:10px;color:var(--text);backdrop-filter:blur(4px);opacity:0;transform:translateY(12px);transition:all .6s ease}
-    .caption.show{opacity:1;transform:translateY(0)}
-    .caption .lead{font-size:18px;line-height:1.5;color:#dff6ff}
-    .caption .sub{font-size:13px;color:var(--muted);margin-top:8px}
-
-    /* final card */
-    .final{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:70;opacity:0;pointer-events:none}
-    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.18));padding:28px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);max-width:780px;text-align:center}
-    .card h2{margin:0 0 10px;font-size:28px}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:linear-gradient(180deg,#02030a 0%,#071029 60%);color:var(--text);-webkit-font-smoothing:antialiased}
+    /* stage full-bleed */
+    .stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    /* LANDSCAPE title card for first 10s */
+    .introCard{
+      width:88vw; max-width:1400px; height:54vw; max-height:800px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.14));
+      border-radius:14px; padding:36px; display:flex; gap:28px; align-items:center; box-shadow: 0 30px 80px rgba(2,6,23,0.8); position:relative;
+      border:1px solid rgba(255,255,255,0.04);
+    }
+    .intro-left{flex:1}
+    .logo{
+      width:132px;height:132px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--warm));
+      display:flex;align-items:center;justify-content:center;font-weight:800;color:#021027;font-size:34px;box-shadow:0 12px 36px rgba(0,0,0,0.6)
+    }
+    h1{margin:0;font-size:36px;letter-spacing:0.2px}
+    p.lead{margin-top:12px;color:#dff6ff;line-height:1.45;max-width:56%}
+    .countdown{
+      position:absolute;right:28px;bottom:28px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.22));
+      padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);text-align:center;
+    }
+    .countdown .num{font-weight:700;font-size:24px;color:var(--accent)}
+    .countdown .hint{font-size:12px;color:var(--muted)}
+    /* video fullscreen container */
+    #introVidWrap{position:absolute;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:black}
+    #introVid{width:100%;height:100%;object-fit:cover}
+    /* slideshow / memories */
+    #memories{position:absolute;inset:0;z-index:40;display:none;align-items:center;justify-content:center;padding:6vh 6vw}
+    .memFrame{width:100%;max-width:1200px;height:calc(100vh - 12vh);background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(0,0,0,0.12));border-radius:14px;padding:28px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 30px 80px rgba(2,6,23,0.7);position:relative;overflow:hidden}
+    .collage{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:120px;gap:12px;align-items:stretch}
+    /* make some items bigger (responsive grid) */
+    .colItem{position:relative;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.03);background:#0a0b12;display:flex;align-items:center;justify-content:center}
+    .colItem img{width:100%;height:100%;object-fit:cover;transition:transform 10s linear}
+    .borderFrame{box-shadow:0 8px 30px rgba(2,6,23,0.6) inset, 0 8px 24px rgba(0,0,0,0.5)}
+    /* captions & overlay */
+    .memOverlay{position:absolute;left:6%;bottom:6%;max-width:42%;background:linear-gradient(180deg, rgba(0,0,0,0.36), rgba(0,0,0,0.18));padding:16px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
+    .memOverlay h2{margin:0 0 6px;font-size:22px}
+    .memOverlay p{margin:0;color:var(--muted);line-height:1.45}
+    /* final message card */
+    .finalCard{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:90;pointer-events:none;opacity:0}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.18));padding:28px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);max-width:820px;text-align:center;backdrop-filter:blur(6px)}
+    .card h2{margin:0 0 12px;font-size:30px}
     .card p{margin:0;color:var(--muted)}
-
-    /* subtle film grain */
-    .grain{pointer-events:none;position:absolute;inset:0;background-image:radial-gradient(ellipse at center, rgba(0,0,0,0.2), transparent 50%);mix-blend-mode:multiply;z-index:80}
-
-    /* small controls (invisible by default) for backup */
-    .controls{position:fixed;right:16px;top:16px;z-index:90;display:flex;gap:8px}
-    .btn{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.03);padding:8px 10px;border-radius:8px;color:var(--muted);font-size:13px}
-
-    @media (max-width:900px){.caption{left:5vw;right:5vw;max-width:90vw}.titleCard h1{font-size:20px}}
+    /* small controls (backup) */
+    .ui{position:fixed;right:18px;top:18px;z-index:120;display:flex;gap:8px}
+    .btn{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.03);padding:8px 10px;border-radius:8px;color:var(--muted);font-size:13px;cursor:pointer}
+    /* responsive adjustments */
+    @media (max-width:1000px){
+      .introCard{height:60vw}
+      .collage{grid-template-columns:repeat(4,1fr)}
+    }
+    @media (max-width:700px){
+      h1{font-size:20px}
+      .introCard{padding:20px;height:70vw}
+      .memOverlay{left:5%;right:5%;max-width:90%}
+      .collage{grid-template-columns:repeat(2,1fr)}
+    }
   </style>
 </head>
 <body>
   <div class="stage" id="stage">
+    <!-- Intro title (10s with countdown) -->
+    <div class="introCard" id="introCard" role="region" aria-label="Intro">
+      <div class="intro-left">
+        <div style="display:flex;align-items:center;gap:18px">
+          <div class="logo" id="logo">YG</div>
+          <div>
+            <h1 id="mainTitle">Untuk Yang — Selamat Ulang Tahun</h1>
+            <div style="color:var(--muted);margin-top:6px">29 November • Dari yang yang sayang</div>
+          </div>
+        </div>
+        <p class="lead">Tidak perlu kata yang berlebihan — ini kenangan sederhana kita, mabar bareng dan project kecil yang bikin bahagia. Tunggu sebentar, kita mulai sebentar lagi.</p>
+      </div>
 
-    <!-- Opening video fullscreen (autoplay muted recommended). Replace src with your video file. -->
-    <div id="intro">
+      <div class="countdown" aria-hidden>
+        <div class="num" id="countNum">10</div>
+        <div class="hint">Detik sebelum mulai</div>
+      </div>
+    </div>
+
+    <!-- Intro video full screen (hidden until countdown ends) -->
+    <div id="introVidWrap" aria-hidden>
       <video id="introVid" playsinline muted preload="auto">
-        <!-- Replace with your opening video (mp4/webm). Put the file in the repo and use relative path like assets/opening.mp4 -->
+        <!-- Replace with your own opening clip (assets/opening.mp4) -->
         <source src="assets/opening.mp4" type="video/mp4">
         Your browser does not support the video tag.
       </video>
-      <div class="overlay">
-        <div class="titleCard" id="titleCard">
-          <h1>Untuk Yang — Selamat Ulang Tahun</h1>
-          <p>29 November • Dari yang yang sayang</p>
+    </div>
+
+    <!-- Memories scene -->
+    <div id="memories" aria-hidden>
+      <div class="memFrame">
+        <div class="collage" id="collage">
+          <!-- We'll inject items via JS to allow rotation/placement -->
+        </div>
+
+        <div class="memOverlay" id="memOverlay">
+          <h2 id="overlayTitle">Kenangan Mabar</h2>
+          <p id="overlayText">Bukan cuma soal game — tapi tentang waktu yang bikin kita ketawa, project yang kita bangun, dan sleep call yang sederhana.</p>
         </div>
       </div>
     </div>
 
-    <!-- Slideshow (hidden until video ends) -->
-    <div id="slideshow">
-      <!-- Slides will be injected by JS -->
-      <div class="caption" id="caption"><div class="lead" id="leadText"></div><div class="sub" id="subText"></div></div>
+    <!-- Final card -->
+    <div class="finalCard" id="finalCard">
+      <div class="card">
+        <h2>Selamat ulang tahun, Yang.</h2>
+        <p>Semoga langkahmu selalu ringan, diberkahi, dan dipenuhi tawa kecil seperti saat kita main bareng. — Dari yang</p>
+      </div>
     </div>
 
-    <div class="final" id="final"><div class="card" id="finalCard"><h2 id="finalTitle">Selamat ulang tahun, Yang.</h2><p id="finalSub">Terima kasih sudah hadir dan bertahan. — Dari yang</p></div></div>
-
-    <div class="grain"></div>
-
-    <div class="controls" aria-hidden>
-      <button class="btn" id="playAudio">Play Audio</button>
-      <button class="btn" id="skipIntro">Skip Intro</button>
+    <!-- small UI controls fallback -->
+    <div class="ui">
+      <button class="btn" id="toggleAudio">Play Music</button>
+      <button class="btn" id="skipAll">Lewati</button>
     </div>
 
-    <!-- background music (sentimental modern) - replace with your own file. Autoplay of unmuted audio may be blocked by browsers. We will attempt to play after user interaction or when intro starts (muted video plays allowed). -->
-    <audio id="bgm" preload="auto" loop>
+    <!-- background music -->
+    <audio id="bgm" loop preload="auto">
+      <!-- Replace with your own royalty-free bgm -->
       <source src="assets/bgm.mp3" type="audio/mpeg">
     </audio>
   </div>
 
-  <script>
-    // ======= Configuration ========
-    const slides = [
-      { img: 'assets/photo1.jpg', text: 'Waktu pertama kita kenal, aku cuma pengen main — tapi kamu bikin hati tenang.' },
-      { img: 'assets/photo2.jpg', text: 'Kamu yang sabar waktu aku masih galau, dan itu mulai nambah rasa aman.' },
-      { img: 'assets/photo3.jpg', text: 'Kita bikin project kecil bareng, pelan tapi nyata — belajar sama-sama.' },
-      { img: 'assets/photo4.jpg', text: 'Bercanda di map, kamu selalu bisa bikin aku ketawa.' },
-      { img: 'assets/photo5.jpg', text: 'Kamu yang nggak banyak drama, tapi selalu ada saat dibutuhkan.' },
-      { img: 'assets/photo6.jpg', text: 'Momen kecil yang terasa besar — tidur bareng lewat call saat jauh.' },
-      { img: 'assets/photo7.jpg', text: 'Kamu belajar sesuatu untuk project kita — dan aku bangga tiap lihat usahamu.' },
-      { img: 'assets/photo8.jpg', text: 'Saat kita saling tolak coba-coba, kamu tetap konsisten dan menghargai.' },
-      { img: 'assets/photo9.jpg', text: 'Kamu mengakui aku di depan orang — itu hal kecil yang berarti besar.' },
-      { img: 'assets/photo10.jpg', text: 'Untuk hari ini: semoga setiap langkahmu ringan dan penuh berkah.' }
-    ];
+<script>
+/* CONFIG — replace asset paths with actual files in assets/ folder */
+const CONFIG = {
+  countdownSec: 10,
+  openingVideo: 'assets/opening.mp4',
+  bgm: 'assets/bgm.mp3',
+  photos: [
+    'assets/photo1.jpg','assets/photo2.jpg','assets/photo3.jpg','assets/photo4.jpg',
+    'assets/photo5.jpg','assets/photo6.jpg','assets/photo7.jpg','assets/photo8.jpg',
+    'assets/photo9.jpg','assets/photo10.jpg'
+  ],
+  // Non-lebaya narasi (one short line per block)
+  overlayTitle: 'Kenangan Mabar',
+  overlayLines: [
+    'Waktu pertama ketemu, kita cuma pengen main — eh malah nyambung.',
+    'Momen lucu di map yang bikin ngakak sampai notifikasi terganggu.',
+    'Project kecil kita: belajar, coba, dan bangun bareng.',
+    'Sleep call yang bikin jauh terasa dekat.',
+    'Kamu selalu sabar, tidak ribet tapi perhatian.',
+    'Ngajak nge-test, nangis karena kalah, lalu ngakak bareng — lengkap.',
+    'Kamu akui aku di depan orang, itu hal kecil tapi berarti.',
+    'Doa sederhana: semoga langkahmu ringan dan diberkahi.'
+  ]
+};
 
-    const INTRO_VIDEO = document.getElementById('introVid');
-    const introWrap = document.getElementById('intro');
-    const titleCard = document.getElementById('titleCard');
-    const slideshow = document.getElementById('slideshow');
-    const caption = document.getElementById('caption');
-    const leadText = document.getElementById('leadText');
-    const final = document.getElementById('final');
-    const finalCard = document.getElementById('finalCard');
-    const bgm = document.getElementById('bgm');
-    const playAudioBtn = document.getElementById('playAudio');
-    const skipIntro = document.getElementById('skipIntro');
+/* Elements */
+const countNum = document.getElementById('countNum');
+const introCard = document.getElementById('introCard');
+const introVidWrap = document.getElementById('introVidWrap');
+const introVid = document.getElementById('introVid');
+const memories = document.getElementById('memories');
+const collage = document.getElementById('collage');
+const memOverlay = document.getElementById('memOverlay');
+const overlayTitle = document.getElementById('overlayTitle');
+const overlayText = document.getElementById('overlayText');
+const finalCard = document.getElementById('finalCard');
+const bgm = document.getElementById('bgm');
+const toggleAudio = document.getElementById('toggleAudio');
+const skipAll = document.getElementById('skipAll');
 
-    // timings (in ms)
-    const introFade = 900; // fade out intro
-    const perSlide = 5000; // each slide duration
-    const captionDelay = 900; // caption fade in delay
+/* Init UI */
+overlayTitle.textContent = CONFIG.overlayTitle;
+overlayText.textContent = CONFIG.overlayLines[0];
 
-    // helper to create slide elements
-    function createSlides(){
-      slides.forEach((s,i)=>{
-        const slide = document.createElement('div'); slide.className='slide';
-        const img = document.createElement('img'); img.src = s.img; img.alt = 'momen '+(i+1);
-        img.className='ken';
-        slide.appendChild(img);
-        slideshow.appendChild(slide);
-      });
-    }
+/* Countdown logic */
+let countdown = CONFIG.countdownSec;
+countNum.textContent = countdown;
+const countdownTick = setInterval(()=>{
+  countdown--;
+  if(countdown<=0){
+    clearInterval(countdownTick);
+    countNum.textContent = 0;
+    startIntroSequence();
+  } else {
+    countNum.textContent = countdown;
+  }
+}, 1000);
 
-    // initialize
-    createSlides();
+/* Start intro: hide introCard and show video fullscreen */
+function startIntroSequence(){
+  // animate introCard fade out using GSAP
+  gsap.to(introCard, {duration:0.8, opacity:0, y:-20, ease:'power2.in', onComplete:()=>{
+    introCard.style.display='none';
+    // show video wrapper
+    introVidWrap.style.display='flex';
+    // set video src in case replaced
+    introVid.src = CONFIG.openingVideo;
+    introVid.load();
+    // try to play muted (browsers usually allow muted autoplay)
+    introVid.muted = true;
+    introVid.play().catch(()=>{ /* ignore */ });
+    // fade in video
+    gsap.fromTo(introVidWrap, {opacity:0}, {duration:0.8, opacity:1, ease:'power2.out'});
+    // also try background music but quiet (will be unmuted on interaction)
+    bgm.src = CONFIG.bgm;
+    bgm.volume = 0.65;
+  }});
+}
 
-    // show title card after short delay
-    setTimeout(()=> titleCard.classList.add('show'), 800);
+/* When video ends -> transition to memories */
+introVid.addEventListener('ended', ()=>{ transitionToMemories(); });
 
-    // attempt to play intro (muted) — this usually allowed
-    function startIntro(){
-      try{ INTRO_VIDEO.currentTime = 0; INTRO_VIDEO.play(); }catch(e){ console.warn('Intro autoplay blocked', e); }
-    }
+/* Allow skipAll to jump */
+skipAll.addEventListener('click', ()=>{ try{ introVid.pause(); }catch(e){} transitionToMemories(); });
 
-    // when intro ends -> transition to slideshow
-    function onIntroEnd(){
-      introWrap.style.transition = `opacity ${introFade}ms ease`; introWrap.style.opacity = 0;
-      setTimeout(()=>{ introWrap.style.display='none'; slideshow.style.display='flex'; startSlideshow(); }, introFade);
-    }
+/* If user clicks anywhere during intro, allow bgm to play (some browsers require interaction) */
+document.addEventListener('click', userInteractedOnce, {once:true});
+function userInteractedOnce(){
+  bgm.play().then(()=>{ toggleAudio.textContent='Pause Music'; }).catch(()=>{ /* blocked */ });
+}
 
-    INTRO_VIDEO.addEventListener('ended', ()=>{
-      // try to start audio gently
-      playAudio(); onIntroEnd();
-    });
+/* Toggle audio UI */
+toggleAudio.addEventListener('click', ()=>{
+  if(bgm.paused) { bgm.play().then(()=> toggleAudio.textContent='Pause Music').catch(()=>{}); }
+  else { bgm.pause(); toggleAudio.textContent='Play Music'; }
+});
 
-    // allow skipping intro
-    skipIntro.addEventListener('click', ()=>{ try{ INTRO_VIDEO.pause(); }catch(e){} playAudio(); onIntroEnd(); });
+/* Build collage layout dynamically with tasteful rotation and borders */
+function buildCollage(){
+  const photos = CONFIG.photos;
+  // choose a layout: create 12 slots (some repeated patterns with larger items)
+  collage.innerHTML = '';
+  // We'll create 10 items; some will span visually by being taller
+  for(let i=0;i<photos.length;i++){
+    const div = document.createElement('div');
+    div.className = 'colItem borderFrame';
+    // random gentle rotation class via style
+    const rot = (Math.random()*6 - 3).toFixed(2); // -3deg .. +3deg
+    div.style.transform = `rotate(${rot}deg)`;
+    // give some items scale and translate to appear dynamic
+    div.style.overflow = 'hidden';
+    // image
+    const img = document.createElement('img');
+    img.src = photos[i];
+    img.alt = 'momen '+(i+1);
+    // small initial transform for Ken Burns
+    img.style.transform = 'scale(1.06)';
+    div.appendChild(img);
+    collage.appendChild(div);
+  }
+  // After DOM built, slightly vary grid sizing by setting some items taller
+  const items = Array.from(collage.children);
+  if(items[0]) items[0].style.gridColumn = 'span 2', items[0].style.gridRow = 'span 2', items[0].style.height = '260px';
+  if(items[3]) items[3].style.gridColumn = 'span 2';
+  if(items[6]) items[6].style.gridRow = 'span 2', items[6].style.height = '260px';
+  // On hover, remove rotation smoothly
+  items.forEach(it=>{
+    it.addEventListener('mouseover', ()=> gsap.to(it, {rotation:0, scale:1.02, duration:0.6}));
+    it.addEventListener('mouseleave', ()=> gsap.to(it, {rotation: (Math.random()*6-3), scale:1, duration:0.8}));
+  });
+}
 
-    // autoplay intro on load
-    window.addEventListener('load', ()=>{ startIntro(); });
+/* Transition to memories scene */
+async function transitionToMemories(){
+  // stop/hide intro video area
+  try{ introVid.pause(); }catch(e){}
+  gsap.to(introVidWrap, {duration:0.8, opacity:0, ease:'power2.in', onComplete:()=>{
+    introVidWrap.style.display='none';
+    // show memories
+    memories.style.display='flex';
+    gsap.fromTo(memories, {opacity:0, y:12}, {duration:0.9, opacity:1, y:0, ease:'power2.out'});
+    // build collage and start subtle animations
+    buildCollage();
+    startCollageMotion();
+    // start cycling overlay texts
+    cycleOverlayTexts();
+    // try to start bgm gently
+    bgm.play().then(()=>{ toggleAudio.textContent='Pause Music'; }).catch(()=>{ toggleAudio.textContent='Play Music'; });
+    // after a while show final card
+    setTimeout(()=> showFinalCard(), (CONFIG.photos.length * 5000) + 2000);
+  }});
+}
 
-    // slideshow logic
-    async function startSlideshow(){
-      const slideEls = Array.from(document.querySelectorAll('.slide'));
-      // show first slide immediately
-      for(let i=0;i<slideEls.length;i++){
-        const el = slideEls[i];
-        el.classList.add('active');
-        // show caption
-        leadText.textContent = slides[i].text; caption.classList.add('show');
-        // kenburns restarts by reflow
-        const img = el.querySelector('img'); img.style.animation = 'none'; void img.offsetWidth; img.style.animation='kenburns 18s ease-in-out forwards';
-        await wait(perSlide);
-        // hide caption
-        caption.classList.remove('show');
-        // fade out
-        el.classList.remove('active');
-      }
-      // show final card
-      await wait(400);
-      final.style.transition = 'opacity 900ms ease'; final.style.opacity = 1; final.style.pointerEvents='auto';
-      // ensure audio continues
-    }
+/* Subtle Ken Burns motion on each image */
+function startCollageMotion(){
+  const imgs = collage.querySelectorAll('img');
+  imgs.forEach((img, idx)=>{
+    const scaleEnd = 1.15 + Math.random()*0.06;
+    gsap.to(img, {scale: scaleEnd, duration: 18 + Math.random()*8, ease:'power1.inOut', repeat:-1, yoyo:true});
+  });
+}
 
-    function wait(ms){ return new Promise(resolve=>setTimeout(resolve, ms)); }
+/* cycle overlay text lines (not lebay) */
+function cycleOverlayTexts(){
+  const lines = CONFIG.overlayLines;
+  let i = 0;
+  overlayText.textContent = lines[0];
+  // show sequence: update text every 5s (aligned with slide feel)
+  setInterval(()=>{
+    i = (i+1) % lines.length;
+    // fade out/in
+    gsap.to(overlayText, {duration:0.45, opacity:0, y:-8, ease:'power2.in', onComplete:()=>{
+      overlayText.textContent = lines[i];
+      gsap.to(overlayText, {duration:0.55, opacity:1, y:0, ease:'power2.out'});
+    }});
+  }, 4800);
+}
 
-    // audio control — browsers block autoplay of unmuted audio; we'll attempt and provide fallback button
-    async function playAudio(){
-      if(bgm.paused){
-        try{ await bgm.play(); playAudioBtn.textContent='Pause Music'; }catch(e){ /* blocked */ playAudioBtn.textContent='Play Music'; }
-      }
-    }
-    playAudioBtn.addEventListener('click', ()=>{ if(bgm.paused) { bgm.play().catch(()=>{}); playAudioBtn.textContent='Pause Music'; } else { bgm.pause(); playAudioBtn.textContent='Play Music'; } });
+/* Final card */
+function showFinalCard(){
+  finalCard.style.pointerEvents='auto';
+  gsap.to(finalCard, {duration:1.2, opacity:1, ease:'power2.out'});
+  // gently lower bgm volume toward the end
+  gsap.to(bgm, {duration:3, volume:0.2});
+}
 
-    // small helper to handle user interaction to enable audio (best effort)
-    document.addEventListener('click', function once(){
-      if(bgm.paused){ bgm.play().catch(()=>{}); playAudioBtn.textContent = bgm.paused? 'Play Music' : 'Pause Music'; }
-      document.removeEventListener('click', once);
-    });
+/* Accessibility: allow Escape to reveal final card / skip over */
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') { showFinalCard(); } });
 
-    // skip intro via key
-    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') skipIntro.click(); });
+/* Preload images for smoother transitions */
+function preloadAssets(){
+  CONFIG.photos.forEach(u => { const i=new Image(); i.src=u; });
+  const v = new Image(); v.src = CONFIG.openingVideo; // browsers may not preload video as image but fine
+  // bgm will load via audio element
+}
+preloadAssets();
 
-  </script>
+</script>
 </body>
 </html>
