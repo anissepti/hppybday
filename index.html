@@ -58,7 +58,7 @@
     border-radius:20px;
   }
   /* Final message */
-  #finalWrap{
+  .finalwrap{
     display:none;
     position:fixed;inset:0;
     justify-content:center;align-items:center;
@@ -87,14 +87,43 @@
   </div>
 </div>
 
-<!-- FINAL -->
-<div id="finalWrap">
+  
+<!-- FINAL SLIDES -->
+<div id="finalWrap" class="finalwrap">
   <div class="finalCard">
-    <h2>HBD ya om Devit 🎉</h2>
-    <p>Jangan begadang terus ya sayang. Lov u ❤️</p>
+    <h2>HBD ya om Devit tua loo wkwk 🎉</h2>
+    <p>Ciee yang terharu abis nonton cinematic wkwk</p>
   </div>
 </div>
 
+<div id="finalWrap2" class="finalwrap">
+  <div class="finalCard">
+    <h2>Kurang-kurangin tuh begadangnya. 🥹</h2>
+    <p>jaga kesehatan ya. jangan sampai sakit ultramen kesayanganku </p>
+  </div>
+</div>
+
+<div id="finalWrap3" class="finalwrap">
+  <div class="finalCard">
+    <h2>Tetap jadi kamu</h2>
+    <p>yang kadang ngeselin, nyebelin tapi ada sisi manis 💫</p>
+  </div>
+</div>
+
+<div id="finalWrap4" class="finalwrap">
+  <div class="finalCard">
+    <h2>Doaku buat kamu 🤍</h2>
+    <p>semoga semua langkahmu dipermudah, rezekimu dilancarkan, dan hatimu selalu tenang</p>
+  </div>
+</div>
+
+<div id="finalWrap5" class="finalwrap">
+  <div class="finalCard">
+    <h2>I Love u sayang 💕</h2>
+    <p>🫶</p>
+  </div>
+</div>
+  
 <!-- Audio countdown -->
 <audio id="countAudio" preload="auto">
   <source src="countdown.mp3" type="audio/mpeg">
@@ -105,25 +134,37 @@ const introWrap = document.getElementById('introWrap');
 const countNum = document.getElementById('countNum');
 const videoSection = document.getElementById('videoSection');
 const introVideo = document.getElementById('introVideo');
-const finalWrap = document.getElementById('finalWrap');
 const countAudio = document.getElementById('countAudio');
+const finalSlides = [
+  document.getElementById('finalWrap'),
+  document.getElementById('finalWrap2'),
+  document.getElementById('finalWrap3'),
+  document.getElementById('finalWrap4'),
+  document.getElementById('finalWrap5')
+];
 
-let remaining = 10;
-countNum.textContent = remaining;
+document.body.addEventListener('click', startCountdown, { once:true });
 
-countAudio.play().catch(()=>{}); // start countdown voice
+function startCountdown(){
+  countAudio.play().catch(()=>{});
+  runCountdown();
+}
 
-const tick = setInterval(()=>{
-  remaining--;
-  if(remaining >= 0) {
-    gsap.fromTo(countNum,{scale:1.2,opacity:0.3},{scale:1,duration:0.6,opacity:1,ease:'power2.out'});
-    countNum.textContent = remaining;
-  }
-  if(remaining <= 0){
-    clearInterval(tick);
-    startVideo();
-  }
-},1000);
+function runCountdown(){
+  let remaining = 10;
+  countNum.textContent = remaining;
+  const tick = setInterval(()=>{
+    remaining--;
+    if(remaining >= 0){
+      gsap.fromTo(countNum,{scale:1.2,opacity:0.3},{scale:1,duration:0.6,opacity:1,ease:'power2.out'});
+      countNum.textContent = remaining;
+    }
+    if(remaining <= 0){
+      clearInterval(tick);
+      startVideo();
+    }
+  },1000);
+}
 
 function startVideo(){
   gsap.to(introWrap,{opacity:0,duration:0.8,onComplete:()=>{
@@ -137,10 +178,22 @@ function startVideo(){
 introVideo.addEventListener('ended', ()=>{
   gsap.to(videoSection,{opacity:0,duration:1,onComplete:()=>{
     videoSection.style.display='none';
-    finalWrap.style.display='flex';
-    gsap.fromTo(finalWrap,{opacity:0},{opacity:1,duration:1});
+    playFinalSlides(0);
   }});
 });
+
+function playFinalSlides(index){
+  if(index >= finalSlides.length) return;
+  const slide = finalSlides[index];
+  slide.style.display='flex';
+  gsap.fromTo(slide,{opacity:0},{opacity:1,duration:1});
+  setTimeout(()=>{
+    gsap.to(slide,{opacity:0,duration:1,onComplete:()=>{
+      slide.style.display='none';
+      playFinalSlides(index+1);
+    }});
+  },4000); // tiap slide 4 detik
+}
 </script>
 </body>
 </html>
