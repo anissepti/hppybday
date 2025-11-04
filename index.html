@@ -58,7 +58,7 @@
 
 <!-- COUNTDOWN -->
 <div class="introWrap" id="introWrap">
-  <div id="countNum">10</div>
+  <div id="countNum">3</div>
   <div id="countText">(tap layarnya dulu ya ❤️)</div>
 </div>
 
@@ -80,7 +80,7 @@
   justify-content:center;
   font-family:'Inter',sans-serif;
   z-index:9999;">
-  <div id="loadingText" style="margin-bottom:15px;">Loading video...</div>
+  <div id="loadingText" style="margin-bottom:15px;">Loading sabar yang...</div>
   <div style="width:70%;height:10px;background:#222;border-radius:5px;overflow:hidden;">
     <div id="progressBar" style="width:0%;height:100%;background:#ffb3d9;transition:width 0.2s;"></div>
   </div>
@@ -151,7 +151,7 @@ function startCountdown(){
 }
 
 function runCountdown(){
-  let remaining = 10;
+  let remaining = 3;
   countNum.textContent = remaining;
   const tick = setInterval(()=>{
     remaining--;
