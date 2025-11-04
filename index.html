@@ -3,170 +3,216 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Happy Birthday — Yang</title>
+  <title>Untuk Yang — Film Pendek Ulang Tahun</title>
+  <meta name="description" content="Cinematic birthday page untuk Devit — auto-play video intro + slideshow photos dengan narasi lembut." />
   <style>
     :root{
-      --bg:#070710;
-      --panel:rgba(10,12,20,0.6);
+      --bg:#060712;
       --accent:#9be7ff;
-      --rose:#ffb4c6;
       --muted:#9aa8b3;
-      --glass: rgba(255,255,255,0.04);
+      --warm:#ffb4c6;
+      --film-tone: rgba(0,0,0,0.45);
+      --text: #eaf6ff;
     }
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;background:linear-gradient(180deg,#02030a 0%,#071029 60%), radial-gradient(1200px 600px at 10% 10%, rgba(155,231,255,0.04), transparent 10%);} 
-    /* cinematic container */
-    .stage{max-width:1100px;margin:28px auto;padding:28px;border-radius:14px;position:relative;overflow:hidden}
-    .frame{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));border-radius:14px;padding:20px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 30px 80px rgba(2,6,23,0.7)}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#02030a 0%,#071029 60%);font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;color:var(--text)}
+    /* frame */
+    .stage{position:relative;overflow:hidden;height:100vh;width:100vw;display:flex;align-items:center;justify-content:center}
 
-    header{display:flex;align-items:center;gap:18px}
-    .badge{width:88px;height:88px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--rose));display:flex;align-items:center;justify-content:center;font-weight:800;color:#021027;font-size:24px;filter:drop-shadow(0 10px 30px rgba(0,0,0,0.6));}
-    h1{font-size:24px;margin:0;color:#e8f7ff}
-    .sub{color:var(--muted);font-size:13px}
+    /* opening video full screen */
+    #intro{position:absolute;inset:0;background:black;display:flex;align-items:center;justify-content:center;z-index:50}
+    #intro video{width:100%;height:100%;object-fit:cover}
 
-    .hero{display:grid;grid-template-columns:1fr 320px;gap:22px;margin-top:18px;align-items:start}
-    .text-block{padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));backdrop-filter: blur(6px);border:1px solid rgba(255,255,255,0.03)}
-    .title{font-weight:700;margin-bottom:8px;color:#ffffff}
-    .lead{color:#d8eefc;line-height:1.5}
+    /* cinematic overlay for title */
+    .overlay{position:absolute;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:flex-start;padding:5vh 8vw;pointer-events:none}
+    .titleCard{backdrop-filter: blur(6px);background:linear-gradient(180deg, rgba(2,6,23,0.25), rgba(2,6,23,0.45));padding:18px 22px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);max-width:720px;opacity:0;transform:translateY(12px);transition:all .9s ease}
+    .titleCard.show{opacity:1;transform:translateY(0)}
+    .titleCard h1{margin:0;font-size:28px;letter-spacing:0.2px}
+    .titleCard p{margin:6px 0 0;color:var(--muted)}
 
-    /* cinematic film strip line */
-    .film{height:6px;border-radius:3px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.06));margin:14px 0;position:relative;overflow:hidden}
-    .film::after{content:'';position:absolute;left:-40%;top:0;height:100%;width:40%;background:linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);animation:filmMove 6s linear infinite}
-    @keyframes filmMove{0%{left:-40%}100%{left:120%}}
+    /* slideshow container */
+    #slideshow{position:absolute;inset:0;z-index:40;display:none;align-items:center;justify-content:center}
+    .slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none}
+    .slide.active{opacity:1;pointer-events:auto}
+    .slide img{width:100%;height:100%;object-fit:cover;filter:contrast(.95) saturate(.95)}
 
-    /* photo montage grid cinematic */
-    .montage{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:120px;gap:10px}
-    .pic{position:relative;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.03);background:#0a0b12}
-    .pic img{width:100%;height:100%;object-fit:cover;display:block;transform:scale(1.04);transition:transform .7s cubic-bezier(.2,.9,.2,1);filter:contrast(.95) saturate(.95)}
-    .pic:hover img{transform:scale(1.1) translateY(-6px)}
-    .pic .meta{position:absolute;left:10px;bottom:10px;background:linear-gradient(90deg, rgba(2,6,23,0.6), rgba(2,6,23,0.3));padding:6px 8px;border-radius:8px;font-size:12px;color:var(--muted)}
+    /* ken burns effect */
+    .ken{transform-origin:center center;animation:kenburns 18s ease-in-out forwards}
+    @keyframes kenburns{0%{transform:scale(1.06) translateY(0)}100%{transform:scale(1.18) translateY(-6px)}}
 
-    /* focal big photo */
-    .focal{grid-column:span 2;grid-row:span 2;height:260px}
+    /* caption */
+    .caption{position:absolute;left:8vw;bottom:10vh;max-width:60vw;background:linear-gradient(180deg, rgba(0,0,0,0.28), rgba(0,0,0,0.18));padding:14px 18px;border-radius:10px;color:var(--text);backdrop-filter:blur(4px);opacity:0;transform:translateY(12px);transition:all .6s ease}
+    .caption.show{opacity:1;transform:translateY(0)}
+    .caption .lead{font-size:18px;line-height:1.5;color:#dff6ff}
+    .caption .sub{font-size:13px;color:var(--muted);margin-top:8px}
 
-    /* subtle vignette and film grain */
-    .grain{pointer-events:none;position:absolute;inset:0;background-image:radial-gradient(ellipse at center, rgba(0,0,0,0.18), transparent 40%);mix-blend-mode:multiply}
+    /* final card */
+    .final{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:70;opacity:0;pointer-events:none}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.18));padding:28px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);max-width:780px;text-align:center}
+    .card h2{margin:0 0 10px;font-size:28px}
+    .card p{margin:0;color:var(--muted)}
 
-    /* controls */
-    .controls{display:flex;gap:10px;align-items:center;margin-top:12px}
-    .btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:10px 14px;border-radius:10px;color:var(--muted);font-size:13px;cursor:pointer}
-    .btn.primary{border-color:rgba(155,231,255,0.28);color:var(--accent)}
+    /* subtle film grain */
+    .grain{pointer-events:none;position:absolute;inset:0;background-image:radial-gradient(ellipse at center, rgba(0,0,0,0.2), transparent 50%);mix-blend-mode:multiply;z-index:80}
 
-    /* audio visual pulse */
-    .pulse{width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--rose));display:flex;align-items:center;justify-content:center;color:#021027;font-weight:700;box-shadow:0 10px 30px rgba(155,231,255,0.06)}
+    /* small controls (invisible by default) for backup */
+    .controls{position:fixed;right:16px;top:16px;z-index:90;display:flex;gap:8px}
+    .btn{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.03);padding:8px 10px;border-radius:8px;color:var(--muted);font-size:13px}
 
-    footer{margin-top:18px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center}
-
-    @media (max-width:880px){.hero{grid-template-columns:1fr} .montage{grid-template-columns:repeat(2,1fr)} .focal{grid-column:auto;grid-row:auto;height:160px}}
-
+    @media (max-width:900px){.caption{left:5vw;right:5vw;max-width:90vw}.titleCard h1{font-size:20px}}
   </style>
 </head>
 <body>
-  <div class="stage">
-    <div class="frame">
-      <header>
-        <div class="badge" id="badge">YG</div>
-        <div>
-          <h1 id="heading">Happy Birthday, <span id="nick">Yang</span></h1>
-          <div class="sub">29 November • Dari yang yang sayang</div>
-        </div>
-        <div style="margin-left:auto;display:flex;gap:10px;align-items:center">
-          <button class="btn" id="playAll">Putar Musik</button>
-          <button class="btn primary" id="focusBtn">Lihat Foto</button>
-        </div>
-      </header>
+  <div class="stage" id="stage">
 
-      <div class="hero">
-        <div class="text-block">
-          <div class="title">Untukmu, yang</div>
-          <div class="lead" id="lead">Selamat ulang tahun. Tidak perlu kata-kata berlebih — cukup hadir, cukup tenang. Terima kasih sudah jadi teman bermain, partner project, dan tempat pulang yang menenangkan. Semoga tahun ini penuh kebahagiaan, kopi enak, dan puncak-puncak yang kita taklukkan bersama.</div>
-
-          <div class="film" aria-hidden></div>
-
-          <div class="controls">
-            <div class="pulse" id="pulse">♥</div>
-            <button class="btn" id="muteBtn">Mute / Unmute</button>
-            <button class="btn" id="downloadBtn">Simpan sebagai HTML</button>
-          </div>
-
-          <div style="margin-top:12px;color:var(--muted);font-size:13px">Panggilan kalian: <strong style="color:var(--accent)">yang • syg</strong></div>
-        </div>
-
-        <div>
-          <div class="montage" id="montage">
-            <div class="pic focal"><img src="https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?q=80&w=1200&auto=format&fit=crop&s=placeholder" alt="focal"></div>
-            <div class="pic"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1200&auto=format&fit=crop&s=placeholder" alt="1"><div class="meta">Momen #1</div></div>
-            <div class="pic"><img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=1200&auto=format&fit=crop&s=placeholder" alt="2"><div class="meta">Momen #2</div></div>
-            <div class="pic"><img src="https://images.unsplash.com/photo-1541849549-45f8f4d8f9b8?q=80&w=1200&auto=format&fit=crop&s=placeholder" alt="3"><div class="meta">Momen #3</div></div>
-            <div class="pic"><img src="https://images.unsplash.com/photo-1504198453319-5ce911bafcde?q=80&w=1200&auto=format&fit=crop&s=placeholder" alt="4"><div class="meta">Momen #4</div></div>
-          </div>
+    <!-- Opening video fullscreen (autoplay muted recommended). Replace src with your video file. -->
+    <div id="intro">
+      <video id="introVid" playsinline muted preload="auto">
+        <!-- Replace with your opening video (mp4/webm). Put the file in the repo and use relative path like assets/opening.mp4 -->
+        <source src="assets/opening.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <div class="overlay">
+        <div class="titleCard" id="titleCard">
+          <h1>Untuk Yang — Selamat Ulang Tahun</h1>
+          <p>29 November • Dari yang yang sayang</p>
         </div>
       </div>
-
-      <footer>
-        <div>Made with care • Dari <strong>yang</strong></div>
-        <div class="sub">Klik foto untuk lihat besar</div>
-      </footer>
-
-      <div class="grain"></div>
     </div>
-  </div>
 
-  <!-- Lightbox -->
-  <div id="lightbox" style="position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:60">
-    <img id="lbImg" src="" style="max-width:90vw;max-height:90vh;border-radius:12px;box-shadow:0 30px 80px rgba(0,0,0,0.8)" alt="">
-  </div>
+    <!-- Slideshow (hidden until video ends) -->
+    <div id="slideshow">
+      <!-- Slides will be injected by JS -->
+      <div class="caption" id="caption"><div class="lead" id="leadText"></div><div class="sub" id="subText"></div></div>
+    </div>
 
-  <!-- Audio (use your own royalty-free file URL or replace) -->
-  <audio id="bgm" loop preload="none">
-    <!-- Replace the src below with a link to a royalty-free instrumental you host or have rights to. -->
-    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7f0f0b9b3d.mp3?filename=summer-piano-1000.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
+    <div class="final" id="final"><div class="card" id="finalCard"><h2 id="finalTitle">Selamat ulang tahun, Yang.</h2><p id="finalSub">Terima kasih sudah hadir dan bertahan. — Dari yang</p></div></div>
+
+    <div class="grain"></div>
+
+    <div class="controls" aria-hidden>
+      <button class="btn" id="playAudio">Play Audio</button>
+      <button class="btn" id="skipIntro">Skip Intro</button>
+    </div>
+
+    <!-- background music (sentimental modern) - replace with your own file. Autoplay of unmuted audio may be blocked by browsers. We will attempt to play after user interaction or when intro starts (muted video plays allowed). -->
+    <audio id="bgm" preload="auto" loop>
+      <source src="assets/bgm.mp3" type="audio/mpeg">
+    </audio>
+  </div>
 
   <script>
-    // small UX configs
-    const nick = 'Yang';
-    document.getElementById('nick').textContent = nick;
-    document.getElementById('badge').textContent = nick.slice(0,2).toUpperCase();
+    // ======= Configuration ========
+    const slides = [
+      { img: 'assets/photo1.jpg', text: 'Waktu pertama kita kenal, aku cuma pengen main — tapi kamu bikin hati tenang.' },
+      { img: 'assets/photo2.jpg', text: 'Kamu yang sabar waktu aku masih galau, dan itu mulai nambah rasa aman.' },
+      { img: 'assets/photo3.jpg', text: 'Kita bikin project kecil bareng, pelan tapi nyata — belajar sama-sama.' },
+      { img: 'assets/photo4.jpg', text: 'Bercanda di map, kamu selalu bisa bikin aku ketawa.' },
+      { img: 'assets/photo5.jpg', text: 'Kamu yang nggak banyak drama, tapi selalu ada saat dibutuhkan.' },
+      { img: 'assets/photo6.jpg', text: 'Momen kecil yang terasa besar — tidur bareng lewat call saat jauh.' },
+      { img: 'assets/photo7.jpg', text: 'Kamu belajar sesuatu untuk project kita — dan aku bangga tiap lihat usahamu.' },
+      { img: 'assets/photo8.jpg', text: 'Saat kita saling tolak coba-coba, kamu tetap konsisten dan menghargai.' },
+      { img: 'assets/photo9.jpg', text: 'Kamu mengakui aku di depan orang — itu hal kecil yang berarti besar.' },
+      { img: 'assets/photo10.jpg', text: 'Untuk hari ini: semoga setiap langkahmu ringan dan penuh berkah.' }
+    ];
 
-    // lightbox
-    const pics = document.querySelectorAll('.pic img');
-    const lightbox = document.getElementById('lightbox');
-    const lbImg = document.getElementById('lbImg');
-    pics.forEach(img=> img.addEventListener('click', ()=>{ lbImg.src = img.src; lightbox.style.display='flex'; document.body.style.overflow='hidden'; }))
-    lightbox.addEventListener('click', ()=>{ lightbox.style.display='none'; lbImg.src=''; document.body.style.overflow='auto'; })
-
-    // audio controls
+    const INTRO_VIDEO = document.getElementById('introVid');
+    const introWrap = document.getElementById('intro');
+    const titleCard = document.getElementById('titleCard');
+    const slideshow = document.getElementById('slideshow');
+    const caption = document.getElementById('caption');
+    const leadText = document.getElementById('leadText');
+    const final = document.getElementById('final');
+    const finalCard = document.getElementById('finalCard');
     const bgm = document.getElementById('bgm');
-    const playAll = document.getElementById('playAll');
-    const muteBtn = document.getElementById('muteBtn');
-    const pulse = document.getElementById('pulse');
+    const playAudioBtn = document.getElementById('playAudio');
+    const skipIntro = document.getElementById('skipIntro');
 
-    let playing = false;
-    playAll.addEventListener('click', async ()=>{
-      try{
-        if(!playing){
-          await bgm.play(); playing=true; playAll.textContent='Pause Musik'; pulse.style.transform='scale(1.06)';
-        } else { bgm.pause(); playing=false; playAll.textContent='Putar Musik'; pulse.style.transform='scale(1)'; }
-      }catch(e){ alert('Autoplay diblokir — klik tombol Play pada audio jika perlu.'); }
-    })
-    muteBtn.addEventListener('click', ()=>{ bgm.muted = !bgm.muted; muteBtn.textContent = bgm.muted? 'Unmute' : 'Mute'; })
+    // timings (in ms)
+    const introFade = 900; // fade out intro
+    const perSlide = 5000; // each slide duration
+    const captionDelay = 900; // caption fade in delay
 
-    // download page as html
-    document.getElementById('downloadBtn').addEventListener('click', ()=>{
-      const html = '<!doctype html>\n'+document.documentElement.outerHTML;
-      const blob = new Blob([html], {type:'text/html'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'happy-birthday.html'; a.click(); URL.revokeObjectURL(url);
-    })
+    // helper to create slide elements
+    function createSlides(){
+      slides.forEach((s,i)=>{
+        const slide = document.createElement('div'); slide.className='slide';
+        const img = document.createElement('img'); img.src = s.img; img.alt = 'momen '+(i+1);
+        img.className='ken';
+        slide.appendChild(img);
+        slideshow.appendChild(slide);
+      });
+    }
 
-    // subtle pulse animation tied to audio volume (fake pulse) -- since we don't analyze audio, toggle style
-    bgm.addEventListener('play', ()=>{ pulse.style.transition='transform .25s ease-in-out'; pulse.style.transform='scale(1.06)'; })
-    bgm.addEventListener('pause', ()=>{ pulse.style.transform='scale(1)'; })
+    // initialize
+    createSlides();
 
-    // small keyboard: space toggles music
-    document.addEventListener('keydown', (e)=>{ if(e.code==='Space'){ e.preventDefault(); playAll.click(); } })
+    // show title card after short delay
+    setTimeout(()=> titleCard.classList.add('show'), 800);
+
+    // attempt to play intro (muted) — this usually allowed
+    function startIntro(){
+      try{ INTRO_VIDEO.currentTime = 0; INTRO_VIDEO.play(); }catch(e){ console.warn('Intro autoplay blocked', e); }
+    }
+
+    // when intro ends -> transition to slideshow
+    function onIntroEnd(){
+      introWrap.style.transition = `opacity ${introFade}ms ease`; introWrap.style.opacity = 0;
+      setTimeout(()=>{ introWrap.style.display='none'; slideshow.style.display='flex'; startSlideshow(); }, introFade);
+    }
+
+    INTRO_VIDEO.addEventListener('ended', ()=>{
+      // try to start audio gently
+      playAudio(); onIntroEnd();
+    });
+
+    // allow skipping intro
+    skipIntro.addEventListener('click', ()=>{ try{ INTRO_VIDEO.pause(); }catch(e){} playAudio(); onIntroEnd(); });
+
+    // autoplay intro on load
+    window.addEventListener('load', ()=>{ startIntro(); });
+
+    // slideshow logic
+    async function startSlideshow(){
+      const slideEls = Array.from(document.querySelectorAll('.slide'));
+      // show first slide immediately
+      for(let i=0;i<slideEls.length;i++){
+        const el = slideEls[i];
+        el.classList.add('active');
+        // show caption
+        leadText.textContent = slides[i].text; caption.classList.add('show');
+        // kenburns restarts by reflow
+        const img = el.querySelector('img'); img.style.animation = 'none'; void img.offsetWidth; img.style.animation='kenburns 18s ease-in-out forwards';
+        await wait(perSlide);
+        // hide caption
+        caption.classList.remove('show');
+        // fade out
+        el.classList.remove('active');
+      }
+      // show final card
+      await wait(400);
+      final.style.transition = 'opacity 900ms ease'; final.style.opacity = 1; final.style.pointerEvents='auto';
+      // ensure audio continues
+    }
+
+    function wait(ms){ return new Promise(resolve=>setTimeout(resolve, ms)); }
+
+    // audio control — browsers block autoplay of unmuted audio; we'll attempt and provide fallback button
+    async function playAudio(){
+      if(bgm.paused){
+        try{ await bgm.play(); playAudioBtn.textContent='Pause Music'; }catch(e){ /* blocked */ playAudioBtn.textContent='Play Music'; }
+      }
+    }
+    playAudioBtn.addEventListener('click', ()=>{ if(bgm.paused) { bgm.play().catch(()=>{}); playAudioBtn.textContent='Pause Music'; } else { bgm.pause(); playAudioBtn.textContent='Play Music'; } });
+
+    // small helper to handle user interaction to enable audio (best effort)
+    document.addEventListener('click', function once(){
+      if(bgm.paused){ bgm.play().catch(()=>{}); playAudioBtn.textContent = bgm.paused? 'Play Music' : 'Pause Music'; }
+      document.removeEventListener('click', once);
+    });
+
+    // skip intro via key
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') skipIntro.click(); });
 
   </script>
 </body>
