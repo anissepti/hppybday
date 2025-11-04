@@ -70,6 +70,7 @@
     </video>
   </div>
 </div>
+<div id="loadingText" style="display:none; position:fixed; inset:0; background:black; color:white; align-items:center; justify-content:center;">Loading video...</div>
 
   
 <!-- FINAL SLIDES -->
@@ -148,13 +149,17 @@ function runCountdown(){
     }
   },1000);
 }
-
 function startVideo(){
   gsap.to(introWrap,{opacity:0,duration:0.8,onComplete:()=>{
     introWrap.style.display='none';
     videoSection.style.display='flex';
     gsap.fromTo(videoSection,{opacity:0},{opacity:1,duration:1});
-    introVideo.play().catch(e=>console.warn(e));
+
+    // Pastikan video sudah bisa diputar
+    introVideo.load(); // memulai preload
+    introVideo.addEventListener('canplaythrough', () => {
+      introVideo.play().catch(e=>console.warn(e));
+    }, { once:true });
   }});
 }
 
@@ -180,7 +185,9 @@ function playFinalSlides(index){
       playFinalSlides(index+1);
     }});
   },4000); // tiap slide 4 detik
-}
+}introVideo.addEventListener('waiting', ()=> loadingText.style.display='flex');
+introVideo.addEventListener('playing', ()=> loadingText.style.display='none');
+
 </script>
 </body>
 </html>
