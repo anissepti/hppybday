@@ -3,40 +3,27 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Untuk Yang — Film Pendek Ulang Tahun</title>
+<title>Untuk Kamu — Spesial Ulang Tahun 🎂</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <style>
   :root{
-    --accent:#ffd6e0;
-    --muted:#9fb2bf;
-    --text:#eaf6ff;
-    --bg:#070616;
+    --accent:#ffcce0;
+    --muted:#a4b8cc;
+    --text:#f6f9ff;
+    --bg:#060616;
   }
   html,body{
     height:100%;margin:0;overflow:hidden;
     font-family:'Inter',sans-serif;
-    background:linear-gradient(180deg,#03030a 0%,#071029 65%);
+    background:linear-gradient(180deg,#050517 0%,#0c132b 65%);
     color:var(--text);
     display:flex;align-items:center;justify-content:center;
   }
 
-  /* Intro card (countdown) */
-  .introWrap{
-    text-align:center;
-  }
-  #countNum{
-    font-size:100px;
-    font-weight:900;
-    color:var(--accent);
-    margin:0;
-  }
-  #countText{
-    font-size:20px;
-    color:var(--muted);
-    margin-top:10px;
-  }
+  .introWrap{text-align:center;}
+  #countNum{font-size:100px;font-weight:900;color:var(--accent);margin:0;}
+  #countText{font-size:18px;color:var(--muted);margin-top:10px;}
 
-  /* VIDEO WRAPPER */
   #videoSection{
     display:none;
     position:fixed;inset:0;
@@ -52,12 +39,10 @@
     box-shadow:0 0 25px rgba(255,200,220,0.4);
   }
   #introVideo{
-    width:100%;height:100%;
-    object-fit:cover;
-    display:block;
-    border-radius:20px;
+    width:100%;height:100%;object-fit:cover;
+    display:block;border-radius:20px;
   }
-  /* Final message */
+
   .finalwrap{
     display:none;
     position:fixed;inset:0;
@@ -65,8 +50,8 @@
     background:linear-gradient(180deg,rgba(0,0,0,0.7),rgba(0,0,0,0.9));
     text-align:center;
   }
-  .finalCard h2{color:var(--accent);font-size:34px;margin:0;}
-  .finalCard p{color:var(--muted);margin-top:10px;font-size:16px;}
+  .finalCard h2{color:var(--accent);font-size:30px;margin:0;}
+  .finalCard p{color:var(--muted);font-size:16px;margin-top:10px;}
 </style>
 </head>
 <body>
@@ -74,7 +59,7 @@
 <!-- COUNTDOWN -->
 <div class="introWrap" id="introWrap">
   <div id="countNum">10</div>
-  <div id="countText">landscape ya sayang sabar tunggu</div>
+  <div id="countText">(tap layar dulu ya sayang ❤️)</div>
 </div>
 
 <!-- VIDEO -->
@@ -82,7 +67,6 @@
   <div class="videoContainer">
     <video id="introVideo" playsinline muted preload="auto">
       <source src="intro.mp4" type="video/mp4" />
-      Browser kamu tidak mendukung video.
     </video>
   </div>
 </div>
@@ -124,7 +108,7 @@
   </div>
 </div>
   
-<!-- Audio countdown -->
+<!-- AUDIO COUNTDOWN -->
 <audio id="countAudio" preload="auto">
   <source src="countdown.mp3" type="audio/mpeg">
 </audio>
