@@ -36,17 +36,27 @@
     margin-top:10px;
   }
 
-  /* Video section */
+  /* VIDEO WRAPPER */
   #videoSection{
     display:none;
     position:fixed;inset:0;
-    background:black;
+    background:rgba(0,0,0,0.85);
     justify-content:center;align-items:center;
   }
-  #introVideo{
-    width:100%;height:100%;object-fit:cover;
+  .videoContainer{
+    width:90%;
+    max-width:600px;
+    aspect-ratio:16/9;
+    overflow:hidden;
+    border-radius:20px;
+    box-shadow:0 0 25px rgba(255,200,220,0.4);
   }
-
+  #introVideo{
+    width:100%;height:100%;
+    object-fit:cover;
+    display:block;
+    border-radius:20px;
+  }
   /* Final message */
   #finalWrap{
     display:none;
@@ -69,10 +79,12 @@
 
 <!-- VIDEO -->
 <div id="videoSection">
-  <video id="introVideo" playsinline preload="auto">
-    <source src="intro.mp4" type="video/mp4" />
-    Browser kamu tidak mendukung video.
-  </video>
+  <div class="videoContainer">
+    <video id="introVideo" playsinline muted preload="auto">
+      <source src="intro.mp4" type="video/mp4" />
+      Browser kamu tidak mendukung video.
+    </video>
+  </div>
 </div>
 
 <!-- FINAL -->
