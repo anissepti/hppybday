@@ -65,7 +65,7 @@
 <!-- VIDEO -->
 <div id="videoSection">
   <div class="videoContainer">
-    <video id="introVideo" playsinline muted preload="auto">
+   <video id="introVideo" playsinline preload="auto">
       <source src="intro.mp4" type="video/mp4" />
     </video>
   </div>
@@ -130,7 +130,6 @@ const finalSlides = [
 document.body.addEventListener('click', startCountdown, { once:true });
 
 function startCountdown(){
-  countAudio.play().catch(()=>{});
   runCountdown();
 }
 
@@ -162,9 +161,13 @@ function startVideo(){
 introVideo.addEventListener('ended', ()=>{
   gsap.to(videoSection,{opacity:0,duration:1,onComplete:()=>{
     videoSection.style.display='none';
+    // putar lagu setelah video selesai
+    countAudio.currentTime = 0;
+    countAudio.play().catch(e => console.warn(e));
     playFinalSlides(0);
   }});
 });
+
 
 function playFinalSlides(index){
   if(index >= finalSlides.length) return;
