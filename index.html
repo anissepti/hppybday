@@ -576,8 +576,7 @@ bgm.muted = false;
 
         // gift click -> confetti + music -> hide gift -> caption -> countdown
         giftBox.addEventListener('click', async function onClick() {
-            // unlock audio on user gesture
-           if (audioCtx.state === "suspended") {
+          if (audioCtx.state === "suspended") {
         audioCtx.resume();
     }
 
@@ -585,15 +584,13 @@ bgm.muted = false;
         bgm.muted = false;
         bgm.volume = 0.9;
 
-        // 🔥 TARUH DI SINI
-        bgm.load();     // memastikan audio siap sebelum play
+        // ⬇⬇⬇ INI TEMPAT PALING BENAR ⬇⬇⬇
+        bgm.load();   // pastikan bisa play di semua device
 
-        // play aman
         const p = bgm.play();
         if (p !== undefined) {
             p.catch(err => {
                 console.log("Retry audio:", err);
-
                 setTimeout(() => {
                     bgm.play().catch(e => console.log("Play failed retry:", e));
                 }, 500);
