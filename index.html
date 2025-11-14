@@ -22,7 +22,7 @@
 
   /* GIFT */
   #giftScreen{position:fixed; inset:0; background:#0d0d1c; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; z-index:9999; text-align:center;}
-  #giftBox{width:160px; height:160px; border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:44px; cursor:pointer; box-shadow:0 10px 40px rgba(0,0,0,0.5); transform-origin:center center;}
+  #giftBox{width:160px; height:160px;  border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:44px; cursor:pointer; box-shadow:0 10px 40px rgba(0,0,0,0.5); transform-origin:center center;}
 
   /* CONFETTI CANVAS */
   #confettiCanvas{position:fixed; inset:0; pointer-events:none; display:none; z-index:9000;}
@@ -37,19 +37,20 @@
   #heartsArea{position:relative; width:100%; height:70%; overflow:hidden; max-width:920px;}
 
   /* VIDEO */
+  /* naikkan z-index video supaya tidak tertutup overlay lain */
   #videoSection{display:none; position:fixed;inset:0; background:rgba(0,0,0,0.92); justify-content:center;align-items:center; z-index:10020;}
   .videoContainer{width:92%; max-width:1100px; aspect-ratio:16/9; overflow:hidden; border-radius:14px; box-shadow:0 0 50px rgba(0,0,0,0.6);}
   #introVideo{width:100%;height:100%;object-fit:cover; display:block; border-radius:10px;}
 
   /* cinematic letterbox bars */
-  .letterbar{position:fixed; left:0; right:0; height:0; background:black; z-index:10030; pointer-events:none;}
+  .letterbar{position:fixed; left:0; right:0; height:0; background:black; z-index:9985; pointer-events:none;}
   #barTop{top:0;}
   #barBottom{bottom:0;}
 
   /* BOOK READER */
-  #bookReader{position:fixed; inset:0; background:linear-gradient(180deg,#fff1f6,#ffeef8); display:none; justify-content:center; align-items:center; overflow:hidden; z-index:10010;}
+  #bookReader{position:fixed; inset:0; background:linear-gradient(180deg,#fff1f6,#ffeef8); display:none; justify-content:center; align-items:center; overflow:hidden; z-index:9996;}
   #bookWrapper{width:86%; max-width:1000px; height:74%; perspective:1600px; position:relative; transform:translateY(-2%);}
-  #bookOuter{position:relative; width:100%; height:100%; transform:rotateZ(-6deg) translateX(2%);} /* tilt whole book right */
+  #bookOuter{position:relative; width:100%; height:100%; transform:rotateZ(-6deg) translateX(2%);} /* tilt whole book right ~6deg */
   #bookPages{position:absolute; inset:0; transform-style:preserve-3d;}
   .page{
     position:absolute;
@@ -70,9 +71,8 @@
     justify-content:center;
     overflow:hidden;
   }
-  .page .page-title{font-size:28px;color:#ff4f9a;margin-bottom:8px; transform:rotate(-4deg);}
+  .page .page-title{font-size:28px;color:#ff4f9a;margin-bottom:8px; transform:rotate(-4deg); /* tilted text */ }
   .page .page-body{font-size:16px;color:#333; line-height:1.5; transform:rotate(-4deg);}
-  .page { z-index:1; }
 
   /* hearts inside book */
   #bookHearts{position:absolute; inset:0; pointer-events:none; z-index:2;}
@@ -88,7 +88,7 @@
     border-radius:999px;
     color:#ffd5e9;
     font-weight:700;
-    z-index:10040;
+    z-index:10010;
     pointer-events:none;
     backdrop-filter: blur(6px);
     border:1px solid rgba(255,255,255,0.04);
@@ -96,12 +96,11 @@
   }
 
   /* fake screenshot thumbnail */
-  #screenshotThumb{position:fixed; right:18px; bottom:-160px; width:160px; height:90px; border-radius:8px; overflow:hidden; box-shadow:0 12px 30px rgba(0,0,0,0.6); background:linear-gradient(180deg,#fff0f8,#ffe6f2); z-index:10035; display:none; border:3px solid rgba(255,255,255,0.2);}
+  /* naikkan z-index thumbnail agar selalu terlihat di atas */
+  #screenshotThumb{position:fixed; right:18px; bottom:18px; width:160px; height:90px; border-radius:8px; overflow:hidden; box-shadow:0 12px 30px rgba(0,0,0,0.6); background:linear-gradient(180deg,#fff0f8,#ffe6f2); z-index:20000; display:none; border:3px solid rgba(255,255,255,0.2); pointer-events:auto;}
 
-  /* loading overlay for video (lower z than video) */
-  #loadingOverlay{display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); color:white; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:10015;}
-  #loadingOverlay .bar {width:60%;height:10px;background:#222;border-radius:6px;overflow:hidden;}
-  #loadingOverlay .bar > div{width:0%;height:100%;background:#ffb3d9;transition:width 0.2s;}
+  /* loading overlay for fake screenshot (biar ada di bawah thumbnail) */
+  #shotOverlay{position:fixed; inset:0; background:rgba(0,0,0,0.65); display:none; align-items:center; justify-content:center; z-index:19999; color:white;}
 
   /* small util */
   .muted{color:#9fb6c9;}
@@ -123,7 +122,7 @@
 <!-- CONFETTI CANVAS -->
 <canvas id="confettiCanvas"></canvas>
 
-<!-- COUNTDOWN (reused when necessary) -->
+<!-- COUNTDOWN -->
 <div id="introWrap" class="introWrap">
   <div id="countNum">3</div>
   <div id="countText">(siap.. )</div>
@@ -131,8 +130,8 @@
 
 <!-- MINI GAME -->
 <div id="miniGameScreen">
-  <h2 style="color:#ffcce0;margin-bottom:8px">Mini Game Dulu 😎</h2>
-  <p class="muted">Klik 10 hati sebelum mereka kabur!</p>
+  <h2 style="color:#ffcce0;margin-bottom:8px">Mini Game Dulu, usaha dulu ya sayang 😎</h2>
+  <p class="muted">Klik 10 kue !</p>
   <div id="heartsArea"></div>
   <p id="heartCounter" style="margin-top:12px;color:#ffcce0;font-weight:700">0 / 10</p>
 </div>
@@ -142,7 +141,7 @@
 <div id="barBottom" class="letterbar"></div>
 
 <!-- VIDEO -->
-<div id="videoSection">
+<div id="videoSection" aria-hidden="true">
   <div class="videoContainer">
     <video id="introVideo" playsinline preload="auto">
       <source src="intro.mp4" type="video/mp4" />
@@ -151,11 +150,11 @@
 </div>
 
 <!-- FAKE SCREENSHOT OVERLAY & THUMB -->
-<div id="shotOverlay" style="display:none;"><div id="shotText" style="color:white;font-size:20px;">Menyimpan momen... 📸</div></div>
-<div id="screenshotThumb"></div>
+<div id="shotOverlay"><div id="shotText">Menyimpan momen... 📸</div></div>
+<div id="screenshotThumb" aria-hidden="true"></div>
 
 <!-- BOOK READER (auto flip) -->
-<div id="bookReader">
+<div id="bookReader" aria-hidden="true">
   <div id="bookWrapper">
     <div id="bookOuter">
       <div id="bookPages">
@@ -181,30 +180,36 @@
 
         <div class="page" style="background:linear-gradient(180deg,#fff1f6,#ffeef8);">
           <div class="page-title">love u 💕</div>
-          <div class="page-body">selesai — cinta selalu</div>
+          <div class="page-body"></div>
         </div>
+
       </div>
       <div id="bookHearts"></div>
     </div>
   </div>
 </div>
 
-<!-- LOADING overlay (lower than video; used as backup) -->
-<div id="loadingOverlay">
-  <div id="loadingText" style="margin-bottom:14px;color:white">Loading sabar yang...</div>
-  <div class="bar"><div id="progressBar" style="width:0%"></div></div>
+<!-- LOADING overlay for video (z-index lebih kecil dari video supaya tidak menutupi) -->
+<div id="loadingOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); color:white; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:10010;">
+  <div id="loadingText" style="margin-bottom:14px">Loading sabar yang...</div>
+  <div style="width:60%;height:10px;background:#222;border-radius:6px;overflow:hidden;">
+    <div id="progressBar" style="width:0%;height:100%;background:#ffb3d9;transition:width 0.2s;"></div>
+  </div>
 </div>
 
 <!-- AUDIO -->
 <audio id="bgm" loop preload="auto"><source src="song.mp3" type="audio/mpeg"></audio>
 
 <script>
-// ====== Elements ======
+/* ------------------ Elements ------------------ */
 const giftBox = document.getElementById('giftBox');
 const giftScreen = document.getElementById('giftScreen');
 
 const confettiCanvas = document.getElementById('confettiCanvas');
 const ctx = confettiCanvas.getContext('2d');
+let confettis = [];
+let runConfetti = false;
+let confettiRAF = null;
 
 const floatingCaption = document.getElementById('floatingCaption');
 const introWrap = document.getElementById('introWrap');
@@ -231,7 +236,7 @@ const bookReader = document.getElementById('bookReader');
 const bookPages = Array.from(document.querySelectorAll('#bookPages .page'));
 const bookHearts = document.getElementById('bookHearts');
 
-// small web audio for sfx (pop / click)
+/* small web audio for sfx (pop / click) */
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 function beep(freq=880, time=0.08, vol=0.02){
   try{
@@ -245,21 +250,18 @@ function beep(freq=880, time=0.08, vol=0.02){
     g.gain.setValueAtTime(vol, audioCtx.currentTime);
     g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + time);
     o.stop(audioCtx.currentTime + time + 0.02);
-  }catch(e){}
+  }catch(e){/* silently fail if audio can't play */}
 }
 
-// small helper
-function wait(ms){ return new Promise(res => setTimeout(res, ms)); }
-function showCaption(text, duration=1500){
-  const el = document.getElementById('floatingCaption');
-  el.textContent = text;
-  el.style.display = 'block';
-  gsap.fromTo(el, {y:-18, opacity:0}, {y:0, opacity:1, duration:0.45, ease:'power2.out'});
-  setTimeout(()=> gsap.to(el, {opacity:0, y:-10, duration:0.4, onComplete: ()=> el.style.display='none'}), duration);
+/* ------------------ helpers ------------------ */
+function showCaption(text, duration=1800){
+  floatingCaption.textContent = text;
+  floatingCaption.style.display = 'block';
+  gsap.fromTo(floatingCaption, {y:-20, opacity:0}, {y:0, opacity:1, duration:0.45, ease:'power2.out'});
+  setTimeout(()=> gsap.to(floatingCaption, {opacity:0, y:-10, duration:0.45, onComplete:()=>floatingCaption.style.display='none'}), duration);
 }
 
-// ====== CONFETTI (mixed shapes) ======
-let confettis = [], runConfetti=false, confettiRAF=null;
+/* ------------------ CONFETTI ------------------ */
 function createConfettiParticle(){
   const w = confettiCanvas.width, h = confettiCanvas.height;
   return {
@@ -273,38 +275,86 @@ function createConfettiParticle(){
     color: ['#ff99c8','#ffcce0','#ffb3d9','#ffe5ec','#fff0b3'][Math.floor(Math.random()*5)]
   };
 }
+
 function startConfetti(){
-  confettiCanvas.width = innerWidth; confettiCanvas.height = innerHeight;
-  confettis = []; runConfetti = true;
+  confettiCanvas.width = innerWidth;
+  confettiCanvas.height = innerHeight;
+  confettis = [];
+  runConfetti = true;
+  confettiCanvas.style.display = 'block';
   for(let i=0;i<100;i++) confettis.push(createConfettiParticle());
-  confettiCanvas.style.display='block';
   animateConfetti();
 }
-function drawStar(x,y,r){ ctx.save(); ctx.beginPath(); for(let i=0;i<5;i++){ ctx.lineTo(Math.cos((18+72*i)/180*Math.PI)*r + x, -Math.sin((18+72*i)/180*Math.PI)*r + y); ctx.lineTo(Math.cos((54+72*i)/180*Math.PI)*r/2 + x, -Math.sin((54+72*i)/180*Math.PI)*r/2 + y);} ctx.closePath(); ctx.fill(); ctx.restore();}
-function drawHeart(x,y,r){ ctx.save(); ctx.beginPath(); const topCurveHeight = r * 0.3; ctx.moveTo(x, y + topCurveHeight); ctx.bezierCurveTo(x, y, x - r, y, x - r, y + topCurveHeight); ctx.bezierCurveTo(x - r, y + (r*0.75), x, y + (r*0.95), x, y + r); ctx.bezierCurveTo(x, y + (r*0.95), x + r, y + (r*0.75), x + r, y + topCurveHeight); ctx.bezierCurveTo(x + r, y, x, y, x, y + topCurveHeight); ctx.fill(); ctx.restore();}
+
+function drawStar(x,y,r){
+  ctx.save();
+  ctx.beginPath();
+  for(let i=0;i<5;i++){
+    ctx.lineTo(Math.cos((18+72*i)/180*Math.PI)*r + x, -Math.sin((18+72*i)/180*Math.PI)*r + y);
+    ctx.lineTo(Math.cos((54+72*i)/180*Math.PI)*r/2 + x, -Math.sin((54+72*i)/180*Math.PI)*r/2 + y);
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+function drawHeart(x,y,r){
+  ctx.save();
+  ctx.beginPath();
+  const topCurveHeight = r * 0.3;
+  ctx.moveTo(x, y + topCurveHeight);
+  ctx.bezierCurveTo(x, y, x - r, y, x - r, y + topCurveHeight);
+  ctx.bezierCurveTo(x - r, y + (r*0.75), x, y + (r*0.95), x, y + r);
+  ctx.bezierCurveTo(x, y + (r*0.95), x + r, y + (r*0.75), x + r, y + topCurveHeight);
+  ctx.bezierCurveTo(x + r, y, x, y, x, y + topCurveHeight);
+  ctx.fill();
+  ctx.restore();
+}
+
 function animateConfetti(){
-  if(!runConfetti){ ctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height); confettis=[]; confettiCanvas.style.display='none'; if(confettiRAF) cancelAnimationFrame(confettiRAF); confettiRAF=null; return; }
+  if(!runConfetti){
+    ctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+    confettis = [];
+    confettiCanvas.style.display = 'none';
+    if(confettiRAF) cancelAnimationFrame(confettiRAF);
+    confettiRAF = null;
+    return;
+  }
   ctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
   confettis.forEach(p=>{
     ctx.save();
     ctx.fillStyle = p.color;
-    if(p.shape==='circle'){ ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); }
-    else if(p.shape==='star'){ drawStar(p.x,p.y,p.r); }
-    else { drawHeart(p.x,p.y,p.r*0.7); }
+    const x = p.x, y = p.y;
+    if(p.shape==='circle'){
+      ctx.beginPath(); ctx.arc(x,y,p.r,0,Math.PI*2); ctx.fill();
+    } else if(p.shape==='star'){
+      drawStar(x,y,p.r);
+    } else {
+      drawHeart(x,y,p.r*0.7);
+    }
     ctx.restore();
     p.y += p.speed;
     p.x += Math.sin(p.angle) * p.sway;
     p.angle += 0.02;
-    if(p.y > confettiCanvas.height + 30){ p.y = -10 - Math.random()*200; p.x = Math.random()*confettiCanvas.width; p.speed = 1 + Math.random()*2; }
+    if(p.y > confettiCanvas.height + 30){
+      p.y = -10 - Math.random()*200;
+      p.x = Math.random()*confettiCanvas.width;
+      p.speed = 1 + Math.random()*2;
+    }
   });
   confettiRAF = requestAnimationFrame(animateConfetti);
 }
-function stopConfettiNow(){ runConfetti=false; }
 
-// ====== FLOW: gift -> confetti -> countdown -> mini-game ======
+function stopConfettiNow(){
+  runConfetti = false;
+}
+
+/* ------------------ Flow control ------------------ */
+function wait(ms){ return new Promise(res => setTimeout(res, ms)); }
+
+/* gift click -> confetti + music -> hide gift -> caption -> countdown */
 giftBox.addEventListener('click', async function onClick(){
   try{ bgm.volume = 0.9; bgm.play().catch(()=>{}); }catch(e){}
-  showCaption('Wuhuu! Buka kadonya 🎁', 1400);
+  showCaption('Wuhuu! Buka kadonya 🎁', 1600);
   startConfetti();
   beep(880,0.06,0.02);
   gsap.fromTo(giftBox, {scale:1}, {scale:1.08, duration:0.12, yoyo:true, repeat:1});
@@ -312,184 +362,254 @@ giftBox.addEventListener('click', async function onClick(){
   gsap.to(giftScreen, {opacity:0, duration:0.9});
   await wait(900);
   giftScreen.style.display='none';
-  showCaption('Confetti polkadot! ✨', 900);
-  await wait(700);
-  // show 3s visual countdown (reuse introWrap)
+  showCaption('Confetti polkadot! ✨', 1000);
+  await wait(800);
   introWrap.style.display='block';
-  await runCountdown(3); // 3s
-  introWrap.style.display='none';
-  await wait(300);
+  await runCountdown();
+  await wait(260);
   startMiniGame();
 }, { once:true });
 
-function runCountdown(seconds=3){
+/* COUNTDOWN returning promise */
+function runCountdown(){
   return new Promise(resolve=>{
-    let remaining = seconds;
+    let remaining = 3;
     countNum.textContent = remaining;
-    introWrap.style.display='block';
     const tick = setInterval(()=>{
-      gsap.fromTo(countNum, {scale:1.2, opacity:0.4}, {scale:1, opacity:1, duration:0.45, ease:'power2.out'});
+      gsap.fromTo(countNum, {scale:1.2, opacity:0.4}, {scale:1, opacity:1, duration:0.5, ease:'power2.out'});
       countNum.textContent = remaining;
-      remaining--;
-      if(remaining < 0){
+      if(remaining <= 0){
         clearInterval(tick);
+        gsap.to(introWrap, {opacity:0, duration:0.5, onComplete: ()=>{ introWrap.style.display='none'; }});
         resolve();
       }
+      remaining--;
     }, 950);
   });
 }
 
-// ====== MINI GAME (click 10 hearts) ======
-let miniGameActive=false, hit=0;
+/* ------------------ MINI GAME ------------------ */
+let miniGameActive = false;
+let hit = 0;
 function startMiniGame(){
-  miniGameActive = true; hit = 0; heartCounter.textContent = `${hit} / 10`; heartsArea.innerHTML = ''; miniGameScreen.style.display='flex';
-  showCaption('Klik 10 hati! ❤️', 1400);
-  for(let i=0;i<10;i++) setTimeout(()=> createMovingHeart(), i*200);
+  miniGameActive = true;
+  hit = 0;
+  heartCounter.textContent = `${hit} / 10`;
+  heartsArea.innerHTML = '';
+  miniGameScreen.style.display = 'flex';
+  showCaption('Klik kue! 🎂', 1500);
+  for(let i=0;i<10;i++){
+    setTimeout(()=> createMovingHeart(), i*220);
+  }
 }
+
 function createMovingHeart(){
   const h = document.createElement('div');
-  h.innerHTML = '❤️';
-  h.style.position='absolute';
+  h.innerHTML = '🎂';
+  h.style.position = 'absolute';
   h.style.left = (10 + Math.random()*80) + '%';
   h.style.top = (10 + Math.random()*70) + '%';
-  h.style.fontSize = (22 + Math.random()*22) + 'px';
-  h.style.cursor='pointer';
-  h.style.userSelect='none';
-  h.style.touchAction='manipulation';
+  h.style.fontSize = (22 + Math.random()*20) + 'px';
+  h.style.cursor = 'pointer';
+  h.style.userSelect = 'none';
+  h.style.touchAction = 'manipulation';
+
+  const removeHeart = ()=> { if(h.parentNode) h.remove(); };
 
   h.addEventListener('click', ()=>{
     if(!miniGameActive) return;
-    hit++; heartCounter.textContent = `${hit} / 10`;
+    hit++;
+    heartCounter.textContent = `${hit} / 10`;
     beep(1000 - hit*20,0.06,0.02);
-    gsap.to(h, {scale:1.4, opacity:0, duration:0.22, onComplete: ()=> h.remove()});
+    gsap.to(h, {scale:1.5, opacity:0, duration:0.24, onComplete: removeHeart});
     if(hit >= 10){
       miniGameActive = false;
-      gsap.to(miniGameScreen, {opacity:0, duration:0.6, onComplete: ()=> { miniGameScreen.style.display='none'; (async()=>{ await autoScreenshotMoment(); await cinematicOpenThenPlayVideo(); })(); }});
+      gsap.to(miniGameScreen, {opacity:0, duration:0.6, onComplete: ()=>{
+        miniGameScreen.style.display='none';
+        (async()=>{
+          await autoScreenshotMoment();
+          await cinematicOpenThenPlayVideo();
+        })();
+      }});
     }
-  }, { once:true });
+  });
 
   heartsArea.appendChild(h);
-  gsap.to(h, { x: (Math.random()*160)-80, y: (Math.random()*120)-60, duration: 2 + Math.random()*2, ease: 'sine.inOut', repeat: -1, yoyo: true });
+  gsap.to(h, {
+    x: (Math.random()*160)-80,
+    y: (Math.random()*120)-60,
+    duration: 2 + Math.random()*2,
+    ease: 'sine.inOut',
+    repeat: -1,
+    yoyo: true
+  });
   gsap.fromTo(h, {opacity:0, scale:0.7}, {opacity:1, scale:1, duration:0.45});
 }
 
-// ====== Fake auto-screenshot moment ======
+/* ------------------ Fake auto-screenshot moment ------------------ */
 async function autoScreenshotMoment(){
-  shotOverlay.style.display='flex';
+  shotOverlay.style.display = 'flex';
+  shotOverlay.style.alignItems='center'; shotOverlay.style.justifyContent='center';
+  document.getElementById('shotText').style.fontSize='22px';
   document.getElementById('shotText').textContent = 'Menyimpan momen manis... 📸';
-  showCaption('Ngambil screenshot...!', 1000);
-  beep(780,0.12,0.02);
-  await wait(900);
+  showCaption('Ngambil screenshot...!', 1200);
+  beep(700,0.12,0.02);
 
-  // thumbnail animation
-  screenshotThumb.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#7a1237;">Saved</div>';
+  await wait(1100);
+
+  // show little thumbnail preview (fake)
   screenshotThumb.style.display = 'block';
-  gsap.to(screenshotThumb, {bottom: "18px", duration:0.56, ease:'power3.out'});
+  screenshotThumb.setAttribute('aria-hidden','false');
+  screenshotThumb.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#7a1237;">Saved</div>';
 
-  // little flash
-  const flash = document.createElement('div'); flash.style.position='fixed'; flash.style.inset='0'; flash.style.background='white'; flash.style.opacity='0'; flash.style.zIndex=10050; document.body.appendChild(flash);
-  gsap.to(flash, {opacity:0.85, duration:0.06, onComplete: ()=> gsap.to(flash,{opacity:0, duration:0.26, onComplete: ()=> flash.remove()})});
-  await wait(420);
+  // small flash
+  const flash = document.createElement('div');
+  flash.style.position='fixed'; flash.style.inset='0'; flash.style.background='white'; flash.style.opacity='0.0'; flash.style.zIndex=20001;
+  document.body.appendChild(flash);
+  gsap.to(flash, {opacity:0.85, duration:0.08, onComplete: ()=> gsap.to(flash, {opacity:0, duration:0.3, onComplete: ()=> flash.remove()})});
+  await wait(400);
 
-  shotOverlay.style.display='none';
+  // hide overlay
+  shotOverlay.style.display = 'none';
   showCaption('Tersimpan! 🎉', 1200);
   beep(1100,0.09,0.02);
 
-  // auto-hide thumbnail after delay
+  // optional: auto-hide thumbnail after some time
   setTimeout(()=> {
-    gsap.to(screenshotThumb, {bottom: "-160px", duration:0.6, ease:'power3.in', onComplete: ()=> screenshotThumb.style.display='none'});
-  }, 2000);
+    gsap.to(screenshotThumb, {y:20, opacity:0, duration:0.6, onComplete: ()=> {
+      screenshotThumb.style.display='none';
+      screenshotThumb.style.opacity = 1;
+      screenshotThumb.style.transform = '';
+    }});
+  }, 2600);
 }
 
-// ====== Cinematic bars + 3s countdown then play video ======
+/* ------------------ Cinematic letterbox opening then play video ------------------ */
 async function cinematicOpenThenPlayVideo(){
-  // show bars
+  // show letterbox bars (animate in)
   gsap.set([barTop, barBottom], {height:0, display:'block'});
   gsap.to([barTop, barBottom], {height:'14vh', duration:0.6, ease:'power3.out'});
   await wait(700);
 
-  // stop confetti & tone down music
   stopConfettiNow();
   gsap.to(bgm, {volume:0.35, duration:0.9});
 
-  // show small 3-second visual countdown on center
-  await runCountdown(3);
-
-  // show video section
+  // show video and ensure loading overlay is behind video (video z-index is higher)
   videoSection.style.display='flex';
-  gsap.fromTo(videoSection, {opacity:0}, {opacity:1, duration:0.45});
-  // prepare video
-  loadingOverlay.style.display = 'flex'; // show backup loading overlay below video
-  try{
-    introVideo.load();
-    await new Promise(res=>{
-      let done=false;
-      introVideo.addEventListener('canplaythrough', ()=>{ if(!done){ done=true; res(); } }, { once:true });
-      setTimeout(()=> { if(!done){ done=true; res(); } }, 3500);
-    });
-  }catch(e){}
-  loadingOverlay.style.display='none';
+  videoSection.setAttribute('aria-hidden','false');
+  gsap.fromTo(videoSection, {opacity:0}, {opacity:1, duration:0.55});
+
+  // start loading indicator (optional)
+  loadingOverlay.style.display = 'flex';
+  progressBar.style.width = '10%';
+
+  // load & play video once canplaythrough (with fallback)
+  introVideo.load();
+  await new Promise(res=>{
+    let done = false;
+    function onReady(){ if(done) return; done = true; res(); }
+    introVideo.addEventListener('canplaythrough', onReady, { once:true });
+    introVideo.addEventListener('loadedmetadata', ()=> { progressBar.style.width = '33%'; }, { once:true });
+    setTimeout(()=> onReady(), 3000); // fallback
+  });
+
+  // minor progress animation
+  gsap.to(progressBar, {width:'55%', duration:0.6});
+
+  // narrow letterbox for cinematic style
   gsap.to([barTop, barBottom], {height:'10vh', duration:0.35});
+  gsap.to(bgm, {volume:0.2, duration:0.8});
 
-  // play video (catch autoplay block)
-  try{ await introVideo.play(); }catch(e){ try{ await introVideo.play(); }catch(e){} }
+  try{
+    await introVideo.play();
+  }catch(e){
+    // autoplay may be blocked — keep video visible and show play hint
+  } finally {
+    // hide loading overlay once video playing or after short delay
+    setTimeout(()=> loadingOverlay.style.display = 'none', 600);
+  }
 
-  // when video ends -> hide video & open book
+  // when video ends -> reveal book
   introVideo.addEventListener('ended', async ()=>{
-    gsap.to(videoSection, {opacity:0, duration:0.7, onComplete: ()=> videoSection.style.display='none'});
-    // animate bars out
+    gsap.to(videoSection, {opacity:0, duration:0.8, onComplete: ()=> {
+      videoSection.style.display='none';
+      videoSection.setAttribute('aria-hidden','true');
+    }});
     gsap.to([barTop, barBottom], {height:'0vh', duration:0.8, ease:'power3.inOut'});
-    // stop bgm
-    gsap.to(bgm, {volume:0, duration:1.1, onComplete: ()=> { try{ bgm.pause(); bgm.currentTime=0;}catch(e){} }});
-    await wait(500);
-    startBookFlip();
+    gsap.to(bgm, {volume:0, duration:1.2, onComplete: ()=> { try{ bgm.pause(); bgm.currentTime=0;}catch(e){} }});
+    await wait(700);
+    startBookReader();
   }, { once:true });
 }
 
-// ====== BOOK FLIP (auto, sequential, no overlap) ======
-async function startBookFlip(){
-  bookReader.style.display = 'flex';
+/* ------------------ BOOK READER auto flip ------------------ */
+let bookFlipInterval = null;
+function startBookReader(){
+  bookReader.style.display='flex';
+  bookReader.setAttribute('aria-hidden','false');
 
-  // ensure initial state
+  // tilt/book outer
   gsap.set('#bookOuter', {rotateZ:-6});
-  bookPages.forEach((p,i)=> {
-    gsap.set(p, {rotateY:90, transformOrigin:'left center'});
+
+  // reset pages
+  bookPages.forEach((p,i)=>{
+    gsap.set(p, {rotateY:90, z:0, transformOrigin:'left center'});
     p.style.zIndex = bookPages.length - i;
   });
 
-  // sequential flip
-  for(let i=0;i<bookPages.length;i++){
-    showCaption(`Membuka halaman ${i+1} ...`, 900);
-    await new Promise(res => gsap.to(bookPages[i], {rotateY:0, duration:1.05, ease:'power3.out', onComplete: res}));
-    // wait for a readable time
-    await wait(2200);
-  }
+  // flip sequence (show one page at a time, then flip it away left before next)
+  (async function flipSequence(){
+    for(let i=0;i<bookPages.length;i++){
+      showCaption(`Membuka halaman ${i+1} ...`, 950);
+      // open page
+      await new Promise(res=>{
+        gsap.to(bookPages[i], {rotateY:0, duration:1.0, ease:'power3.out', onComplete: res});
+      });
+      // keep visible
+      await wait(2000);
 
-  // after flipping, spawn floating hearts
-  spawnBookHearts();
-  showCaption('Selesai — HBD lagi! 🎉', 2000);
+      // if not last, flip current page away to left so next becomes visible cleanly
+      if(i < bookPages.length - 1){
+        await new Promise(res=>{
+          gsap.to(bookPages[i], {rotateY:-90, duration:0.9, ease:'power3.in', onComplete: res});
+        });
+        // small pause before next
+        await wait(200);
+      }
+    }
+
+    // after all pages shown, spawn hearts and final caption
+    spawnBookHearts();
+    showCaption('Selesai — HBD lagi! 🎉', 2200);
+  })();
 }
 
+/* spawn hearts floating inside book */
+let bookHeartsTimer = null;
 function spawnBookHearts(){
-  setInterval(()=> {
-    const h = document.createElement('div'); h.innerHTML = '💗';
+  if(bookHeartsTimer) clearInterval(bookHeartsTimer);
+  bookHeartsTimer = setInterval(()=>{
+    const h = document.createElement('div');
+    h.innerHTML = '💗';
     h.style.position='absolute';
-    h.style.left = (8 + Math.random()*84) + '%';
-    h.style.bottom = '-8px';
+    h.style.left = (10 + Math.random()*80) + '%';
+    h.style.bottom = '-10px';
     h.style.fontSize = (12 + Math.random()*26) + 'px';
     bookHearts.appendChild(h);
     gsap.to(h, {y: - (200 + Math.random()*260), opacity:0, duration:2.6 + Math.random()*1.4, ease:'power1.out', onComplete: ()=> h.remove()});
-  }, 300);
+  }, 320);
 }
 
-// ====== resize / safety handlers ======
+/* ------------------ window handlers ------------------ */
 window.addEventListener('resize', ()=>{
   confettiCanvas.width = innerWidth;
   confettiCanvas.height = innerHeight;
 });
+
+/* stop confetti if leaving */
 window.addEventListener('pagehide', ()=> stopConfettiNow());
 
-// ====== init minimal: set canvas sizes ======
+/* ensure canvas initial size */
 confettiCanvas.width = innerWidth;
 confettiCanvas.height = innerHeight;
 
