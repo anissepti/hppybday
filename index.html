@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="id">
 <head>
@@ -37,8 +38,7 @@
   #heartsArea{position:relative; width:100%; height:70%; overflow:hidden; max-width:920px;}
 
   /* VIDEO */
-  /* naikkan z-index video supaya tidak tertutup overlay lain */
-  #videoSection{display:none; position:fixed;inset:0; background:rgba(0,0,0,0.92); justify-content:center;align-items:center; z-index:10020;}
+  #videoSection{display:none; position:fixed;inset:0; background:rgba(0,0,0,0.92); justify-content:center;align-items:center; z-index:9999;}
   .videoContainer{width:92%; max-width:1100px; aspect-ratio:16/9; overflow:hidden; border-radius:14px; box-shadow:0 0 50px rgba(0,0,0,0.6);}
   #introVideo{width:100%;height:100%;object-fit:cover; display:block; border-radius:10px;}
 
@@ -48,7 +48,7 @@
   #barBottom{bottom:0;}
 
   /* BOOK READER */
-  #bookReader{position:fixed; inset:0; background:linear-gradient(180deg,#fff1f6,#ffeef8); display:none; justify-content:center; align-items:center; overflow:hidden; z-index:9996;}
+  #bookReader{position:fixed; inset:0; background:linear-gradient(180deg,#fff1f6,#ffeef8); display:none; justify-content:center; align-items:center; overflow:hidden; z-index:9995;}
   #bookWrapper{width:86%; max-width:1000px; height:74%; perspective:1600px; position:relative; transform:translateY(-2%);}
   #bookOuter{position:relative; width:100%; height:100%; transform:rotateZ(-6deg) translateX(2%);} /* tilt whole book right ~6deg */
   #bookPages{position:absolute; inset:0; transform-style:preserve-3d;}
@@ -96,11 +96,10 @@
   }
 
   /* fake screenshot thumbnail */
-  /* naikkan z-index thumbnail agar selalu terlihat di atas */
-  #screenshotThumb{position:fixed; right:18px; bottom:18px; width:160px; height:90px; border-radius:8px; overflow:hidden; box-shadow:0 12px 30px rgba(0,0,0,0.6); background:linear-gradient(180deg,#fff0f8,#ffe6f2); z-index:20000; display:none; border:3px solid rgba(255,255,255,0.2); pointer-events:auto;}
+  #screenshotThumb{position:fixed; right:18px; bottom:18px; width:160px; height:90px; border-radius:8px; overflow:hidden; box-shadow:0 12px 30px rgba(0,0,0,0.6); background:linear-gradient(180deg,#fff0f8,#ffe6f2); z-index:10012; display:none; border:3px solid rgba(255,255,255,0.2);}
 
-  /* loading overlay for fake screenshot (biar ada di bawah thumbnail) */
-  #shotOverlay{position:fixed; inset:0; background:rgba(0,0,0,0.65); display:none; align-items:center; justify-content:center; z-index:19999; color:white;}
+  /* loading overlay for fake screenshot */
+  #shotOverlay{position:fixed; inset:0; background:rgba(0,0,0,0.65); display:none; align-items:center; justify-content:center; z-index:10011; color:white;}
 
   /* small util */
   .muted{color:#9fb6c9;}
@@ -141,7 +140,7 @@
 <div id="barBottom" class="letterbar"></div>
 
 <!-- VIDEO -->
-<div id="videoSection" aria-hidden="true">
+<div id="videoSection">
   <div class="videoContainer">
     <video id="introVideo" playsinline preload="auto">
       <source src="intro.mp4" type="video/mp4" />
@@ -151,34 +150,34 @@
 
 <!-- FAKE SCREENSHOT OVERLAY & THUMB -->
 <div id="shotOverlay"><div id="shotText">Menyimpan momen... 📸</div></div>
-<div id="screenshotThumb" aria-hidden="true"></div>
+<div id="screenshotThumb"></div>
 
 <!-- BOOK READER (auto flip) -->
-<div id="bookReader" aria-hidden="true">
+<div id="bookReader">
   <div id="bookWrapper">
     <div id="bookOuter">
       <div id="bookPages">
-        <div class="page" style="background:linear-gradient(180deg,#fff7fb,#fff0f8);">
+        <div class="page" style="background:linear-gradient(180deg,#fff7fb,#fff0f8);z-index: 9995 !important;">
           <div class="page-title">Happy Birthday Devit aka little_drax7 🎉</div>
           <div class="page-body">makasih udah jadi partner balapan roblox, partner naik gunung, dan partner nyebelin harian :))</div>
         </div>
 
-        <div class="page" style="background:linear-gradient(180deg,#fffaf0,#fff4e8);">
+        <div class="page" style="background:linear-gradient(180deg,#fffaf0,#fff4e8);z-index: 9996 !important;">
           <div class="page-title">Kurang-kurangin tuh begadangnya. 🥹</div>
           <div class="page-body">jaga kesehatan ya. jangan sampai sakit ultramen penjaga buminya</div>
         </div>
 
-        <div class="page" style="background:linear-gradient(180deg,#f0fff6,#e8fff1);">
+        <div class="page" style="background:linear-gradient(180deg,#f0fff6,#e8fff1);z-index: 9997 !important;">
           <div class="page-title">Tetap jadi kamu</div>
           <div class="page-body">yang kadang ngeselin, nyebelin tapi ada sisi manisnya 💫 (hueekk kok mual ya)</div>
         </div>
 
-        <div class="page" style="background:linear-gradient(180deg,#fffef2,#fff6e8);">
+        <div class="page" style="background:linear-gradient(180deg,#fffef2,#fff6e8);z-index: 9998 !important;">
           <div class="page-title">Doaku buat yg lagi hbd 🤍</div>
           <div class="page-body">semoga semua langkahmu dipermudah tuhan, rezekimu dilancarkan, dan hatimu selalu tenang jangan marah2 terus</div>
         </div>
 
-        <div class="page" style="background:linear-gradient(180deg,#fff1f6,#ffeef8);">
+        <div class="page" style="background:linear-gradient(180deg,#fff1f6,#ffeef8);z-index: 9999 !important;">
           <div class="page-title">love u 💕</div>
           <div class="page-body"></div>
         </div>
@@ -189,8 +188,8 @@
   </div>
 </div>
 
-<!-- LOADING overlay for video (z-index lebih kecil dari video supaya tidak menutupi) -->
-<div id="loadingOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); color:white; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:10010;">
+<!-- LOADING overlay for video -->
+<div id="loadingOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); color:white; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9970;">
   <div id="loadingText" style="margin-bottom:14px">Loading sabar yang...</div>
   <div style="width:60%;height:10px;background:#222;border-radius:6px;overflow:hidden;">
     <div id="progressBar" style="width:0%;height:100%;background:#ffb3d9;transition:width 0.2s;"></div>
@@ -201,7 +200,7 @@
 <audio id="bgm" loop preload="auto"><source src="song.mp3" type="audio/mpeg"></audio>
 
 <script>
-/* ------------------ Elements ------------------ */
+// ------------------ Elements ------------------
 const giftBox = document.getElementById('giftBox');
 const giftScreen = document.getElementById('giftScreen');
 
@@ -236,7 +235,7 @@ const bookReader = document.getElementById('bookReader');
 const bookPages = Array.from(document.querySelectorAll('#bookPages .page'));
 const bookHearts = document.getElementById('bookHearts');
 
-/* small web audio for sfx (pop / click) */
+// small web audio for sfx (pop / click)
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 function beep(freq=880, time=0.08, vol=0.02){
   try{
@@ -250,10 +249,10 @@ function beep(freq=880, time=0.08, vol=0.02){
     g.gain.setValueAtTime(vol, audioCtx.currentTime);
     g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + time);
     o.stop(audioCtx.currentTime + time + 0.02);
-  }catch(e){/* silently fail if audio can't play */}
+  }catch(e){}
 }
 
-/* ------------------ helpers ------------------ */
+// ------------------ helpers ------------------
 function showCaption(text, duration=1800){
   floatingCaption.textContent = text;
   floatingCaption.style.display = 'block';
@@ -261,8 +260,9 @@ function showCaption(text, duration=1800){
   setTimeout(()=> gsap.to(floatingCaption, {opacity:0, y:-10, duration:0.45, onComplete:()=>floatingCaption.style.display='none'}), duration);
 }
 
-/* ------------------ CONFETTI ------------------ */
+// ------------------ CONFETTI (polkadot C: mixed shapes) ------------------
 function createConfettiParticle(){
+  // mix: circle, star, heart (render via paths)
   const w = confettiCanvas.width, h = confettiCanvas.height;
   return {
     x: Math.random()*w,
@@ -281,7 +281,6 @@ function startConfetti(){
   confettiCanvas.height = innerHeight;
   confettis = [];
   runConfetti = true;
-  confettiCanvas.style.display = 'block';
   for(let i=0;i<100;i++) confettis.push(createConfettiParticle());
   animateConfetti();
 }
@@ -336,6 +335,7 @@ function animateConfetti(){
     p.x += Math.sin(p.angle) * p.sway;
     p.angle += 0.02;
     if(p.y > confettiCanvas.height + 30){
+      // recycle nicely
       p.y = -10 - Math.random()*200;
       p.x = Math.random()*confettiCanvas.width;
       p.speed = 1 + Math.random()*2;
@@ -344,38 +344,48 @@ function animateConfetti(){
   confettiRAF = requestAnimationFrame(animateConfetti);
 }
 
+// stop confetti immediate
 function stopConfettiNow(){
   runConfetti = false;
 }
 
-/* ------------------ Flow control ------------------ */
+// ------------------ Flow control with async helpers ------------------
 function wait(ms){ return new Promise(res => setTimeout(res, ms)); }
 
-/* gift click -> confetti + music -> hide gift -> caption -> countdown */
+// gift click -> confetti + music -> hide gift -> caption -> countdown
 giftBox.addEventListener('click', async function onClick(){
+  // unlock audio on user gesture
   try{ bgm.volume = 0.9; bgm.play().catch(()=>{}); }catch(e){}
+  // show caption
   showCaption('Wuhuu! Buka kadonya 🎁', 1600);
+  confettiCanvas.style.display = 'block';
   startConfetti();
+  // small pop sfx
   beep(880,0.06,0.02);
   gsap.fromTo(giftBox, {scale:1}, {scale:1.08, duration:0.12, yoyo:true, repeat:1});
+  // animate gift out
   await wait(700);
   gsap.to(giftScreen, {opacity:0, duration:0.9});
   await wait(900);
   giftScreen.style.display='none';
+  // small pause to let confetti flow
   showCaption('Confetti polkadot! ✨', 1000);
   await wait(800);
+  // show countdown
   introWrap.style.display='block';
-  await runCountdown();
+  await runCountdown(); // returns after countdown ended
+  // continue to mini game
   await wait(260);
   startMiniGame();
 }, { once:true });
 
-/* COUNTDOWN returning promise */
+// COUNTDOWN returning promise
 function runCountdown(){
   return new Promise(resolve=>{
     let remaining = 3;
     countNum.textContent = remaining;
     const tick = setInterval(()=>{
+      // animate number
       gsap.fromTo(countNum, {scale:1.2, opacity:0.4}, {scale:1, opacity:1, duration:0.5, ease:'power2.out'});
       countNum.textContent = remaining;
       if(remaining <= 0){
@@ -388,9 +398,8 @@ function runCountdown(){
   });
 }
 
-/* ------------------ MINI GAME ------------------ */
+// ------------------ MINI GAME (A) ------------------
 let miniGameActive = false;
-let hit = 0;
 function startMiniGame(){
   miniGameActive = true;
   hit = 0;
@@ -398,6 +407,7 @@ function startMiniGame(){
   heartsArea.innerHTML = '';
   miniGameScreen.style.display = 'flex';
   showCaption('Klik kue! 🎂', 1500);
+  // spawn 10 hearts progressively to avoid overlap
   for(let i=0;i<10;i++){
     setTimeout(()=> createMovingHeart(), i*220);
   }
@@ -426,13 +436,14 @@ function createMovingHeart(){
       miniGameActive = false;
       gsap.to(miniGameScreen, {opacity:0, duration:0.6, onComplete: ()=>{
         miniGameScreen.style.display='none';
+        // Do fake auto-screenshot moment (cute loading), cinematic letterbox, then start video
         (async()=>{
           await autoScreenshotMoment();
           await cinematicOpenThenPlayVideo();
         })();
       }});
     }
-  });
+  }, { once:true });
 
   heartsArea.appendChild(h);
   gsap.to(h, {
@@ -446,8 +457,9 @@ function createMovingHeart(){
   gsap.fromTo(h, {opacity:0, scale:0.7}, {opacity:1, scale:1, duration:0.45});
 }
 
-/* ------------------ Fake auto-screenshot moment ------------------ */
+// ------------------ Fake auto-screenshot moment ------------------
 async function autoScreenshotMoment(){
+  // show overlay + "saving" UI
   shotOverlay.style.display = 'flex';
   shotOverlay.style.alignItems='center'; shotOverlay.style.justifyContent='center';
   document.getElementById('shotText').style.fontSize='22px';
@@ -455,140 +467,98 @@ async function autoScreenshotMoment(){
   showCaption('Ngambil screenshot...!', 1200);
   beep(700,0.12,0.02);
 
+  // simulate process
   await wait(1100);
-
   // show little thumbnail preview (fake)
   screenshotThumb.style.display = 'block';
-  screenshotThumb.setAttribute('aria-hidden','false');
   screenshotThumb.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#7a1237;">Saved</div>';
-
   // small flash
   const flash = document.createElement('div');
-  flash.style.position='fixed'; flash.style.inset='0'; flash.style.background='white'; flash.style.opacity='0.0'; flash.style.zIndex=20001;
+  flash.style.position='fixed'; flash.style.inset='0'; flash.style.background='white'; flash.style.opacity='0.0'; flash.style.zIndex=10013;
   document.body.appendChild(flash);
   gsap.to(flash, {opacity:0.85, duration:0.08, onComplete: ()=> gsap.to(flash, {opacity:0, duration:0.3, onComplete: ()=> flash.remove()})});
   await wait(400);
-
   // hide overlay
   shotOverlay.style.display = 'none';
   showCaption('Tersimpan! 🎉', 1200);
   beep(1100,0.09,0.02);
-
-  // optional: auto-hide thumbnail after some time
-  setTimeout(()=> {
-    gsap.to(screenshotThumb, {y:20, opacity:0, duration:0.6, onComplete: ()=> {
-      screenshotThumb.style.display='none';
-      screenshotThumb.style.opacity = 1;
-      screenshotThumb.style.transform = '';
-    }});
-  }, 2600);
 }
 
-/* ------------------ Cinematic letterbox opening then play video ------------------ */
+// ------------------ Cinematic letterbox opening then play video ------------------
 async function cinematicOpenThenPlayVideo(){
   // show letterbox bars (animate in)
   gsap.set([barTop, barBottom], {height:0, display:'block'});
   gsap.to([barTop, barBottom], {height:'14vh', duration:0.6, ease:'power3.out'});
   await wait(700);
 
+  // stop confetti now & fade music slightly
   stopConfettiNow();
   gsap.to(bgm, {volume:0.35, duration:0.9});
 
-  // show video and ensure loading overlay is behind video (video z-index is higher)
+  // small pause, then show video area and play
   videoSection.style.display='flex';
-  videoSection.setAttribute('aria-hidden','false');
   gsap.fromTo(videoSection, {opacity:0}, {opacity:1, duration:0.55});
-
-  // start loading indicator (optional)
-  loadingOverlay.style.display = 'flex';
-  progressBar.style.width = '10%';
-
-  // load & play video once canplaythrough (with fallback)
+  // load & play video once canplaythrough
   introVideo.load();
   await new Promise(res=>{
-    let done = false;
-    function onReady(){ if(done) return; done = true; res(); }
-    introVideo.addEventListener('canplaythrough', onReady, { once:true });
-    introVideo.addEventListener('loadedmetadata', ()=> { progressBar.style.width = '33%'; }, { once:true });
-    setTimeout(()=> onReady(), 3000); // fallback
+    introVideo.addEventListener('canplaythrough', ()=> res(), { once:true });
+    // fallback timeout 3s
+    setTimeout(()=> res(), 3000);
   });
-
-  // minor progress animation
-  gsap.to(progressBar, {width:'55%', duration:0.6});
-
-  // narrow letterbox for cinematic style
+  // close letterbox (narrow) for cinematic (bars remain but smaller)
   gsap.to([barTop, barBottom], {height:'10vh', duration:0.35});
+  // fade bgm down more
   gsap.to(bgm, {volume:0.2, duration:0.8});
-
-  try{
-    await introVideo.play();
-  }catch(e){
-    // autoplay may be blocked — keep video visible and show play hint
-  } finally {
-    // hide loading overlay once video playing or after short delay
-    setTimeout(()=> loadingOverlay.style.display = 'none', 600);
-  }
-
-  // when video ends -> reveal book
+  try{ await introVideo.play(); }catch(e){}
+  // when video ends, bars open again to reveal book
   introVideo.addEventListener('ended', async ()=>{
-    gsap.to(videoSection, {opacity:0, duration:0.8, onComplete: ()=> {
-      videoSection.style.display='none';
-      videoSection.setAttribute('aria-hidden','true');
-    }});
+    gsap.to(videoSection, {opacity:0, duration:0.8, onComplete: ()=> videoSection.style.display='none'});
+    // small reveal: open bars (short)
     gsap.to([barTop, barBottom], {height:'0vh', duration:0.8, ease:'power3.inOut'});
+    // stop bgm completely
     gsap.to(bgm, {volume:0, duration:1.2, onComplete: ()=> { try{ bgm.pause(); bgm.currentTime=0;}catch(e){} }});
+    // start book reader after short pause
     await wait(700);
     startBookReader();
   }, { once:true });
 }
 
-/* ------------------ BOOK READER auto flip ------------------ */
-let bookFlipInterval = null;
+// ------------------ BOOK READER auto flip (tilt right ~15deg) ------------------
 function startBookReader(){
+  // prepare pages: rotateY 90deg -> will flip to 0
   bookReader.style.display='flex';
-  bookReader.setAttribute('aria-hidden','false');
 
-  // tilt/book outer
-  gsap.set('#bookOuter', {rotateZ:-6});
-
-  // reset pages
+  // set initial transform for tilt right: we'll rotate bookOuter a bit to mimic tilt right 15deg
+  gsap.set('#bookOuter', {rotateZ:-6}); // subtle skew kept in CSS
+  // set pages initial
   bookPages.forEach((p,i)=>{
     gsap.set(p, {rotateY:90, z:0, transformOrigin:'left center'});
     p.style.zIndex = bookPages.length - i;
+    // tilt text inside slightly right visually by CSS rotate(-4deg)
   });
 
-  // flip sequence (show one page at a time, then flip it away left before next)
+  // auto flip with timer; ensure none skipped by chaining promises
   (async function flipSequence(){
     for(let i=0;i<bookPages.length;i++){
+      // small pre-caption for each page
       showCaption(`Membuka halaman ${i+1} ...`, 950);
-      // open page
+      // flip (rotateY 0)
       await new Promise(res=>{
-        gsap.to(bookPages[i], {rotateY:0, duration:1.0, ease:'power3.out', onComplete: res});
+        gsap.to(bookPages[i], {rotateY:0, duration:1.15, ease:'power3.out', onComplete: res});
       });
-      // keep visible
-      await wait(2000);
-
-      // if not last, flip current page away to left so next becomes visible cleanly
-      if(i < bookPages.length - 1){
-        await new Promise(res=>{
-          gsap.to(bookPages[i], {rotateY:-90, duration:0.9, ease:'power3.in', onComplete: res});
-        });
-        // small pause before next
-        await wait(200);
-      }
+      // keep page visible for configurable time
+      await wait(2400);
     }
-
-    // after all pages shown, spawn hearts and final caption
+    // after all pages, keep floating hearts
     spawnBookHearts();
+    // show final caption
     showCaption('Selesai — HBD lagi! 🎉', 2200);
   })();
 }
 
-/* spawn hearts floating inside book */
-let bookHeartsTimer = null;
+// spawn hearts floating inside book
 function spawnBookHearts(){
-  if(bookHeartsTimer) clearInterval(bookHeartsTimer);
-  bookHeartsTimer = setInterval(()=>{
+  setInterval(()=>{
     const h = document.createElement('div');
     h.innerHTML = '💗';
     h.style.position='absolute';
@@ -600,18 +570,14 @@ function spawnBookHearts(){
   }, 320);
 }
 
-/* ------------------ window handlers ------------------ */
+// ------------------ window handlers ------------------
 window.addEventListener('resize', ()=>{
   confettiCanvas.width = innerWidth;
   confettiCanvas.height = innerHeight;
 });
 
-/* stop confetti if leaving */
+// stop confetti if leaving
 window.addEventListener('pagehide', ()=> stopConfettiNow());
-
-/* ensure canvas initial size */
-confettiCanvas.width = innerWidth;
-confettiCanvas.height = innerHeight;
 
 </script>
 </body>
