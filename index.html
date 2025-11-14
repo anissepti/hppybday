@@ -573,10 +573,14 @@
         // gift click -> confetti + music -> hide gift -> caption -> countdown
         giftBox.addEventListener('click', async function onClick() {
             // unlock audio on user gesture
-            try {
-                bgm.volume = 0.9;
-                bgm.play().catch(() => {});
-            } catch (e) {}
+           if (audioCtx.state === "suspended") {
+        audioCtx.resume();
+    }
+
+    try {
+        bgm.volume = 0.9;
+        bgm.play().catch(() => {});
+    } catch (e) {}
             // show caption
             showCaption('aseekk di klik, Estetikan dulu gaseehh ✨ ', 1800);
             confettiCanvas.style.display = 'block';
@@ -855,6 +859,7 @@
             gsap.set('#bookOuter', {
                 rotateZ: -6
             });
+ensureBgm();
 
             bookPages.forEach((p, i) => {
                 gsap.set(p, {
@@ -872,7 +877,7 @@
                     if (i > 0) {
                         gsap.to(bookPages[i - 1], {
                             rotateY: -90,
-                            duration: 2.7,
+                            duration: 4.7,
                             ease: 'power3.in'
                         });
                     }
@@ -884,7 +889,7 @@
                     await new Promise(res => {
                         gsap.to(bookPages[i], {
                             rotateY: 0,
-                            duration: 2.70,
+                            duration: 4.70,
                             ease: 'power3.out',
                             onComplete: res
                         });
@@ -928,6 +933,15 @@
 
         // stop confetti if leaving
         window.addEventListener('pagehide', () => stopConfettiNow());
+
+        function ensureBgm() {
+    bgm.volume = 0.9;
+    bgm.play().catch(err => {
+        console.log("Retry audio:", err);
+    });
+}
+
+        
     </script>
 </body>
 
