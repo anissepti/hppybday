@@ -9,249 +9,263 @@
   :root{
     --accent:#ffcce0;
     --muted:#a4b8cc;
-    --text:#f6f9ff;
+    --text:#0b1220;
     --bg:#060616;
   }
   html,body{
     height:100%;margin:0;overflow:hidden;
-    font-family:'Inter',sans-serif;
+    font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;
     background:linear-gradient(180deg,#050517 0%,#0c132b 65%);
     color:var(--text);
     display:flex;align-items:center;justify-content:center;
   }
 
-  .introWrap{text-align:center; display:none;}
+  /* GIFT */
+  #giftScreen{position:fixed; inset:0; background:#0d0d1c; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; z-index:9999; text-align:center;}
+  #giftBox{width:150px; height:150px; background:#ff99c8; border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:40px; cursor:pointer; box-shadow:0 8px 30px rgba(0,0,0,0.5);}
+
+  /* CONFETTI CANVAS */
+  #confettiCanvas{position:fixed; inset:0; pointer-events:none; display:none; z-index:9000;}
+
+  /* COUNTDOWN */
+  .introWrap{text-align:center; display:none; z-index:9980;}
   #countNum{font-size:100px;font-weight:900;color:var(--accent);margin:0;}
-  #countText{font-size:18px;color:var(--muted);margin-top:10px;}
+  #countText{font-size:18px;color:#a4b8cc;margin-top:8px;}
 
-  #videoSection{
-    display:none;
-    position:fixed;inset:0;
-    background:rgba(0,0,0,0.85);
-    justify-content:center;align-items:center;
+  /* MINI GAME */
+  #miniGameScreen{position:fixed; inset:0; background:linear-gradient(180deg,#071029,#061227); display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:white; z-index:9998;}
+  #heartsArea{position:relative; width:100%; height:70%; overflow:hidden; max-width:900px;}
+
+  /* VIDEO */
+  #videoSection{display:none; position:fixed;inset:0; background:rgba(0,0,0,0.85); justify-content:center;align-items:center; z-index:9970;}
+  .videoContainer{width:90%; max-width:900px; aspect-ratio:16/9; overflow:hidden; border-radius:20px; box-shadow:0 0 35px rgba(0,0,0,0.6);}
+  #introVideo{width:100%;height:100%;object-fit:cover; display:block; border-radius:12px;}
+
+  /* BOOK READER */
+  #bookReader{position:fixed; inset:0; background:linear-gradient(180deg,#fff1f6,#ffeef8); display:none; justify-content:center; align-items:center; overflow:hidden; z-index:9996;}
+  #bookContainer{width:84%; max-width:920px; height:70%; perspective:1400px; position:relative;}
+  #bookPages{position:absolute; inset:0; transform-style:preserve-3d;}
+  .page{
+    position:absolute;
+    inset:0;
+    margin:auto;
+    width:95%;
+    height:92%;
+    background:white;
+    border-radius:12px;
+    box-shadow:0 18px 40px rgba(7,10,18,0.25);
+    padding:36px;
+    text-align:left;
+    backface-visibility:hidden;
+    transform-origin:left center;
+    transform:rotateY(90deg) translateZ(0);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
   }
-  .videoContainer{
-    width:90%;
-    max-width:600px;
-    aspect-ratio:16/9;
-    overflow:hidden;
-    border-radius:20px;
-    box-shadow:0 0 25px rgba(255,200,220,0.4);
-  }
-  #introVideo{
-    width:100%;height:100%;object-fit:cover;
-    border-radius:20px;
+  .page h2{margin:0 0 10px 0; font-size:28px; color:#ff4f9a;}
+  .page p{margin:0; color:#333; font-size:16px; line-height:1.5;}
+
+  /* tilt / skew to make book look angled */
+  #bookContainer::before{
+    content:'';
+    position:absolute; inset:auto -10% 30% auto; width:60%; height:60%;
+    transform:skewY(-6deg) rotate(-6deg);
+    background:linear-gradient(135deg,#ffd7ea,#ffd1f2);
+    filter:blur(40px);
+    opacity:0.18;
   }
 
-  .finalwrap{
-    display:none;
-    position:fixed;inset:0;
-    justify-content:center;align-items:center;
-    background:linear-gradient(180deg,rgba(0,0,0,0.7),rgba(0,0,0,0.9));
-    text-align:center;
-  }
-  .finalCard h2{color:var(--accent);font-size:30px;margin:0;}
-  .finalCard p{color:var(--muted);font-size:16px;margin-top:10px;}
+  /* hearts inside book */
+  #bookHearts{position:absolute; inset:0; pointer-events:none; z-index:2;}
 
+  /* small util */
+  .centered{display:flex;align-items:center;justify-content:center;}
+  .muted{color:#8fa0b6;}
+  button.btn{padding:8px 14px;border-radius:9px;border:0;background:#ff96c7;color:#061227;cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
 
 <!-- GIFT SCREEN -->
-<div id="giftScreen" style="
-  position:fixed; inset:0; background:#0d0d1c;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  color:white; z-index:9999; text-align:center;">
-  
-  <h2 style="margin-bottom:20px; color:#ffcce0;">Ada hadiah buat kamu 🎁</h2>
-  
-  <div id="giftBox" style="
-    width:150px; height:150px; background:#ff99c8;
-    border-radius:20px; display:flex; align-items:center; justify-content:center;
-    font-size:40px; cursor:pointer;">
-    🎁
-  </div>
-
-  <p style="margin-top:15px; color:#a4b8cc;">Klik dulu kadonya ya…</p>
+<div id="giftScreen">
+  <h2 style="margin-bottom:18px;color:#ffcce0">Ada hadiah buat kamu 🎁</h2>
+  <div id="giftBox" role="button" aria-label="Buka Kado">🎁</div>
+  <p style="margin-top:14px;color:#a4b8cc">Klik dulu kadonya ya…</p>
 </div>
 
-<!-- POLKADOT CONFETTI -->
-<canvas id="confettiCanvas" style="
-  position:fixed; inset:0; pointer-events:none; display:none; z-index:9000;">
-</canvas>
+<!-- CONFETTI CANVAS -->
+<canvas id="confettiCanvas"></canvas>
 
 <!-- COUNTDOWN -->
 <div id="introWrap" class="introWrap">
-  <h1 id="countNum">3</h1>
-  <div id="countText">Mulai yaa...</div>
+  <div id="countNum">3</div>
+  <div id="countText">(tap layarnya dulu ya)</div>
 </div>
 
 <!-- MINI GAME -->
-<div id="miniGameScreen" style="
-  position:fixed; inset:0; background:#0b0f22;
-  display:none; flex-direction:column; align-items:center; justify-content:center;
-  text-align:center; color:white; z-index:9998;">
-
-  <h2 style="color:#ffcce0; margin-bottom:10px;">Mini Game Dulu 😎</h2>
-  <p style="color:#a4b8cc;">Klik 10 hati sebelum mereka kabur!</p>
-
-  <div id="heartsArea" style="position:relative; width:100%; height:70%; overflow:hidden;"></div>
-
-  <p id="heartCounter">0 / 10</p>
+<div id="miniGameScreen">
+  <h2 style="color:#ffcce0;margin-bottom:8px">Mini Game Dulu 😎</h2>
+  <p class="muted">Klik 10 hati sebelum mereka kabur!</p>
+  <div id="heartsArea"></div>
+  <p id="heartCounter" style="margin-top:12px;color:#ffcce0;font-weight:700">0 / 10</p>
 </div>
 
 <!-- VIDEO -->
 <div id="videoSection">
   <div class="videoContainer">
-   <video id="introVideo" playsinline preload="auto">
+    <video id="introVideo" playsinline preload="auto">
       <source src="intro.mp4" type="video/mp4" />
     </video>
   </div>
 </div>
 
-<div id="loadingOverlay" style="
-  display:none;
-  position:fixed;inset:0;
-  background:black;
-  color:white;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  font-family:'Inter',sans-serif;
-  z-index:9999;">
-  <div id="loadingText" style="margin-bottom:15px;">Loading sabar yang...</div>
-  <div style="width:70%;height:10px;background:#222;border-radius:5px;overflow:hidden;">
+<!-- BOOK READER (pages will flip) -->
+<div id="bookReader">
+  <div id="bookContainer">
+    <div id="bookPages">
+      <!-- pages: order = first opened -> last -->
+      <div class="page" style="background:linear-gradient(180deg,#fff7fb,#fff0f8);">
+        <h2>Kurang-kurangin tuh begadangnya 🥹</h2>
+        <p>jaga kesehatan ya. jangan sampai sakit ultramen penjaga buminya.</p>
+      </div>
+
+      <div class="page" style="background:linear-gradient(180deg,#fffaf0,#fff4e8);">
+        <h2>Tetap jadi kamu</h2>
+        <p>yang kadang ngeselin, nyebelin tapi ada sisi manisnya 💫 (hueekk kok mual ya)</p>
+      </div>
+
+      <div class="page" style="background:linear-gradient(180deg,#f0fff6,#e8fff1);">
+        <h2>Doaku buat yang lagi HBD 🤍</h2>
+        <p>semoga semua langkahmu dipermudah, rezekimu dilancarkan, dan hatimu selalu tenang.</p>
+      </div>
+
+      <div class="page" style="background:linear-gradient(180deg,#fff1f6,#ffeef8);">
+        <h2>love u 💕</h2>
+        <p>makasih udah jadi partner balapan roblox, partner naik gunung, dan partner nyebelin harian :))</p>
+      </div>
+    </div>
+
+    <div id="bookHearts"></div>
+  </div>
+</div>
+
+<!-- LOADING overlay for video -->
+<div id="loadingOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); color:white; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9995;">
+  <div id="loadingText" style="margin-bottom:14px">Loading sabar yang...</div>
+  <div style="width:60%;height:10px;background:#222;border-radius:6px;overflow:hidden;">
     <div id="progressBar" style="width:0%;height:100%;background:#ffb3d9;transition:width 0.2s;"></div>
   </div>
 </div>
 
-<!-- BOOK ENDING -->
-<div id="bookEnding" style="
-  position:fixed; inset:0; background:#ffdde4;
-  display:none; align-items:center; justify-content:center; overflow:hidden;
-  z-index:9998;">
-
-  <div id="floatingHearts"></div>
-
-  <div id="bookPage" style="
-    width:80%; max-width:600px; height:70%;
-    background:white; border-radius:10px;
-    transform-origin:left center; transform:rotateY(90deg);
-    box-shadow:0 15px 30px rgba(0,0,0,.2);
-    padding:30px; text-align:center;">
-
-    <h2 style="color:#ff66a3;">Happy Birthday Devit aka little_drax7 🎉</h2>
-    <p style="color:#555;">
-      makasih udah jadi partner balapan roblox, partner naik gunung, dan partner nyebelin harian :))
-    </p>
-  </div>
-</div>
-
-<!-- FINAL SLIDES -->
-<div id="finalWrap2" class="finalwrap">
-  <div class="finalCard">
-    <h2>Kurang-kurangin tuh begadangnya. 🥹</h2>
-    <p>jaga kesehatan ya. jangan sampai sakit ultramen penjaga buminya </p>
-  </div>
-</div>
-
-<div id="finalWrap3" class="finalwrap">
-  <div class="finalCard">
-    <h2>Tetap jadi kamu</h2>
-    <p>yang kadang ngeselin, nyebelin tapi ada sisi manisnya 💫 (hueekk kok mual ya)</p>
-  </div>
-</div>
-
-<div id="finalWrap4" class="finalwrap">
-  <div class="finalCard">
-    <h2>Doaku buat yg lagi hbd 🤍</h2>
-    <p>semoga semua langkahmu dipermudah, rezekimu dilancarkan, dan hatimu selalu tenang</p>
-  </div>
-</div>
-
-<div id="finalWrap5" class="finalwrap">
-  <div class="finalCard">
-    <h2>love u 💕</h2>
-    <p></p>
-  </div>
-</div>
-
 <!-- AUDIO -->
-<audio id="countAudio">
-  <source src="song.mp3" type="audio/mpeg">
-</audio>
+<audio id="countAudio" preload="auto"><source src="song.mp3" type="audio/mpeg"></audio>
 
 <script>
-// ===================== ELEMENTS ======================
-const countNum = document.getElementById('countNum');
+// ---------- Elements ----------
+const giftScreen = document.getElementById('giftScreen');
+const giftBox = document.getElementById('giftBox');
+
+const confettiCanvas = document.getElementById('confettiCanvas');
+const ctx = confettiCanvas.getContext('2d');
+let confettis = [];
+let runConfetti = false;
+let confettiRAF = null;
+
 const introWrap = document.getElementById('introWrap');
+const countNum = document.getElementById('countNum');
+
+const miniGameScreen = document.getElementById('miniGameScreen');
+const heartsArea = document.getElementById('heartsArea');
+const heartCounter = document.getElementById('heartCounter');
+let hit = 0;
+
 const videoSection = document.getElementById('videoSection');
 const introVideo = document.getElementById('introVideo');
-const countAudio = document.getElementById('countAudio');
 const loadingOverlay = document.getElementById('loadingOverlay');
 const progressBar = document.getElementById('progressBar');
 const loadingText = document.getElementById('loadingText');
+const countAudio = document.getElementById('countAudio');
 
-// SLIDES
-const finalSlides = [
-  document.getElementById('finalWrap2'),
-  document.getElementById('finalWrap3'),
-  document.getElementById('finalWrap4'),
-  document.getElementById('finalWrap5')
-];
+const bookReader = document.getElementById('bookReader');
+const bookPages = document.querySelectorAll('#bookPages .page');
+const bookHearts = document.getElementById('bookHearts');
 
-// ===================== GIFT OPENING ======================
-const giftScreen = document.getElementById('giftScreen');
-const giftBox = document.getElementById('giftBox');
-const confettiCanvas = document.getElementById('confettiCanvas');
-const ctx = confettiCanvas.getContext('2d');
+// ---------- UTILS ----------
+function vw(n){ return Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) * (n/100); }
+function vh(n){ return Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) * (n/100); }
 
-giftBox.addEventListener('click', ()=>{
+// ---------- GIFT CLICK (start) ----------
+giftBox.addEventListener('click', onGiftClick, { once:true });
+function onGiftClick(){
+  // show confetti
   confettiCanvas.style.display = 'block';
   startConfetti();
 
-  gsap.to(giftScreen,{
-    opacity:0,
-    duration:1,
-    onComplete:()=>{
-      giftScreen.style.display='none';
-      introWrap.style.display='block';
-      runCountdown();
-    }
-  });
-});
+  // small gift 'pop' and disappear
+  gsap.fromTo(giftBox, {scale:1}, {scale:1.07, duration:0.12, yoyo:true, repeat:1});
+  gsap.to(giftScreen, {opacity:0, duration:0.9, delay:0.5, onComplete:()=>{
+    giftScreen.style.display = 'none';
+    introWrap.style.display = 'block';
+    runCountdown(); // start countdown after gift
+  }});
+}
 
-// ===================== CONFETTI ======================
-let confettis = [];
+// ---------- CONFETTI ----------
 function startConfetti(){
   confettiCanvas.width = innerWidth;
   confettiCanvas.height = innerHeight;
+  confettis = [];
+  runConfetti = true;
 
-  for(let i=0;i<70;i++){
+  for(let i=0;i<80;i++){
     confettis.push({
-      x: Math.random()*innerWidth,
-      y: Math.random()*innerHeight - innerHeight,
+      x: Math.random()*confettiCanvas.width,
+      y: Math.random()*-confettiCanvas.height,
       r: Math.random()*8 + 4,
       color: ['#ff99c8','#ffcce0','#ffb3d9','#ffe5ec'][Math.floor(Math.random()*4)],
-      speed: Math.random()*3 + 1
+      speed: Math.random()*2 + 1,
+      sway: Math.random()*1.2,
+      angle: Math.random()*Math.PI*2
     });
   }
   animateConfetti();
 }
+
 function animateConfetti(){
-  ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+  if(!runConfetti){
+    // clear canvas one last time and stop
+    ctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+    confettis = [];
+    confettiCanvas.style.display = 'none';
+    if(confettiRAF) cancelAnimationFrame(confettiRAF);
+    confettiRAF = null;
+    return;
+  }
+
+  ctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
   confettis.forEach(c=>{
     ctx.beginPath();
-    ctx.arc(c.x,c.y,c.r,0,Math.PI*2);
-    ctx.fillStyle=c.color;
+    ctx.arc(c.x, c.y, c.r, 0, Math.PI*2);
+    ctx.fillStyle = c.color;
     ctx.fill();
-    c.y+=c.speed;
-    if(c.y > innerHeight+20) c.y = -20;
+    c.y += c.speed;
+    c.x += Math.sin(c.angle) * c.sway;
+    c.angle += 0.02;
+    if(c.y > confettiCanvas.height + 20){
+      c.y = -20 - Math.random()*200;
+      c.x = Math.random()*confettiCanvas.width;
+    }
   });
-  requestAnimationFrame(animateConfetti);
+  confettiRAF = requestAnimationFrame(animateConfetti);
 }
 
-// ===================== COUNTDOWN ======================
+// helper to force stop confetti immediately
+function stopConfettiNow(){
+  runConfetti = false;
+}
+
+// ---------- COUNTDOWN ----------
 function runCountdown(){
   let remaining = 3;
   countNum.textContent = remaining;
@@ -259,175 +273,180 @@ function runCountdown(){
   const tick = setInterval(()=>{
     remaining--;
     if(remaining >= 0){
-      gsap.fromTo(countNum,{scale:1.2,opacity:0.3},{scale:1,duration:0.6,opacity:1});
+      gsap.fromTo(countNum,{scale:1.2,opacity:0.4},{scale:1,duration:0.55,opacity:1,ease:'power2.out'});
       countNum.textContent = remaining;
     }
     if(remaining <= 0){
       clearInterval(tick);
-      introWrap.style.display='none';
-      startMiniGame();
+      // hide countdown
+      gsap.to(introWrap,{opacity:0,duration:0.6,onComplete:()=>{ introWrap.style.display='none'; }});
+      // start mini game
+      setTimeout(()=> startMiniGame(), 300);
     }
   },1000);
 }
 
-// ===================== MINI GAME ======================
-const miniGameScreen = document.getElementById('miniGameScreen');
-const heartsArea = document.getElementById('heartsArea');
-const heartCounter = document.getElementById('heartCounter');
-
-let hit = 0;
-
+// ---------- MINI GAME (click hearts) ----------
 function startMiniGame(){
-  miniGameScreen.style.display='flex';
-  spawnHeart();
-}
+  hit = 0;
+  heartCounter.textContent = `${hit} / 10`;
+  heartsArea.innerHTML = '';
+  miniGameScreen.style.display = 'flex';
 
-function spawnHeart(){
+  // spawn hearts
   for(let i=0;i<10;i++){
-    const h = document.createElement('div');
-    h.innerHTML='❤️';
-    h.style.position='absolute';
-    h.style.left = Math.random()*80 + '%';
-    h.style.top = Math.random()*80 + '%';
-    h.style.fontSize='30px';
-    h.style.cursor='pointer';
-
-    h.addEventListener('click',()=>{
-      hit++;
-      heartCounter.textContent = hit + ' / 10';
-      h.remove();
-      if(hit>=10) endMiniGame();
-    });
-
-    heartsArea.appendChild(h);
-
-    gsap.to(h,{
-      x:(Math.random()*100)-50,
-      y:(Math.random()*100)-50,
-      duration:2,
-      repeat:-1,
-      yoyo:true
-    });
+    createMovingHeart();
   }
 }
 
-function endMiniGame(){
-  gsap.to(miniGameScreen,{
-    opacity:0,
-    duration:1,
-    onComplete:()=>{
-      miniGameScreen.style.display='none';
-      startVideo();
+function createMovingHeart(){
+  const h = document.createElement('div');
+  h.innerHTML = '❤️';
+  h.style.position = 'absolute';
+  h.style.left = (10 + Math.random()*80) + '%';
+  h.style.top = (10 + Math.random()*70) + '%';
+  h.style.fontSize = (22 + Math.random()*18) + 'px';
+  h.style.cursor = 'pointer';
+  h.style.userSelect = 'none';
+
+  h.addEventListener('click', ()=> {
+    hit++;
+    heartCounter.textContent = `${hit} / 10`;
+    gsap.to(h, {scale:1.4, opacity:0, duration:0.25, onComplete:()=>h.remove()});
+    if(hit >= 10) {
+      // small celebration
+      gsap.to(miniGameScreen, {opacity:0, duration:0.6, onComplete: ()=>{
+        miniGameScreen.style.display = 'none';
+        // stop confetti when starting video
+        stopConfettiNow();
+        // start video
+        startVideo();
+      }});
     }
-  });
-}
-
-// ===================== VIDEO ======================
-function startVideo(){
-  videoSection.style.display='flex';
-  gsap.fromTo(videoSection,{opacity:0},{opacity:1,duration:1});
-  
-  showLoading();
-
-  introVideo.load();
-  introVideo.addEventListener('canplaythrough',()=>{
-    hideLoading();
-    introVideo.play().catch(()=>{});
   }, { once:true });
 
-}
+  heartsArea.appendChild(h);
 
-introVideo.addEventListener('progress',()=>{
-  if(introVideo.buffered.length>0 && introVideo.duration>0){
-    const bufferedEnd = introVideo.buffered.end(0);
-    const percent = (bufferedEnd/introVideo.duration)*100;
-    progressBar.style.width = percent + '%';
-    loadingText.textContent='Loading video... '+Math.round(percent)+'%';
-  }
-});
-
-introVideo.addEventListener('waiting',showLoading);
-introVideo.addEventListener('playing',hideLoading);
-
-introVideo.addEventListener('ended',()=>{
-  gsap.to(videoSection,{
-    opacity:0,
-    duration:1,
-    onComplete:()=>{
-      videoSection.style.display='none';
-      countAudio.play();
-      playFinalSlides(0);
-    }
+  // floating/moving tween
+  gsap.to(h, {
+    x: (Math.random()*160)-80,
+    y: (Math.random()*120)-60,
+    duration: 2 + Math.random()*2,
+    ease: 'sine.inOut',
+    repeat: -1,
+    yoyo: true
   });
-});
 
-function showLoading(){
-  loadingOverlay.style.display='flex';
-}
-function hideLoading(){
-  loadingOverlay.style.display='none';
+  // fade in
+  gsap.fromTo(h, {opacity:0, scale:0.7}, {opacity:1, scale:1, duration:0.5});
 }
 
-// ===================== FINAL SLIDES ======================
-function playFinalSlides(index){
-  if(index >= finalSlides.length){
-    showBookEnding();
-    return;
+// ---------- VIDEO ----------
+function startVideo(){
+  videoSection.style.display = 'flex';
+  gsap.fromTo(videoSection,{opacity:0},{opacity:1,duration:0.8});
+  showLoading();
+
+  // ensure canvas is hidden & animation stopped already
+  stopConfettiNow();
+
+  // load and play
+  introVideo.load();
+  introVideo.addEventListener('canplaythrough', onVideoCanPlay, { once:true });
+  introVideo.addEventListener('ended', onVideoEnded);
+}
+
+function onVideoCanPlay(){
+  hideLoading();
+  introVideo.play().catch(()=>{});
+}
+function onVideoEnded(){
+  gsap.to(videoSection, {opacity:0, duration:0.8, onComplete: ()=>{
+    videoSection.style.display = 'none';
+    // play short music
+    try{ countAudio.currentTime = 0; countAudio.play(); } catch(e){}
+    // open book reader pages
+    setTimeout(()=> startBookReader(), 300);
+  }});
+}
+
+function showLoading(){ loadingOverlay.style.display = 'flex'; }
+function hideLoading(){ loadingOverlay.style.display = 'none'; }
+
+introVideo.addEventListener('progress', ()=>{
+  if(introVideo.buffered.length > 0 && introVideo.duration > 0){
+    const bufferedEnd = introVideo.buffered.end(introVideo.buffered.length - 1);
+    const percent = Math.min(100, (bufferedEnd/introVideo.duration)*100);
+    progressBar.style.width = percent + '%';
+    loadingText.textContent = `Loading video... ${Math.round(percent)}%`;
   }
+});
+introVideo.addEventListener('waiting', showLoading);
+introVideo.addEventListener('playing', hideLoading);
 
-  const slide = finalSlides[index];
-  slide.style.display='flex';
+// ---------- BOOK READER (3D flip pages) ----------
+function startBookReader(){
+  bookReader.style.display = 'flex';
+  // reset pages to closed state (rotateY 90deg)
+  bookPages.forEach((p,i)=>{
+    gsap.set(p, {rotateY:90, z:0, transformOrigin:'left center'});
+    // small offset by z-index layering
+    p.style.zIndex = bookPages.length - i;
+  });
 
-  gsap.fromTo(slide,{opacity:0},{opacity:1,duration:1});
-
-  setTimeout(()=>{
-    gsap.to(slide,{
-      opacity:0,
-      duration:1,
-      onComplete:()=>{
-        slide.style.display='none';
-        playFinalSlides(index+1);
+  // flip them one by one with tilt
+  let idx = 0;
+  function flipNext(){
+    if(idx >= bookPages.length){
+      // finished flipping, keep hearts floating
+      spawnBookHearts();
+      return;
+    }
+    const p = bookPages[idx];
+    gsap.to(p, {
+      rotateY:0,
+      duration:1.2,
+      ease:'power3.out',
+      onStart: ()=> {
+        // tiny tilt effect
+        gsap.fromTo(p, {rotationX:6}, {rotationX:0, duration:1.1});
+      },
+      onComplete: ()=> {
+        idx++;
+        setTimeout(flipNext, 1800);
       }
     });
-  },5000);
+  }
+  flipNext();
 }
 
-// ===================== BOOK ENDING ======================
-const bookEnding = document.getElementById('bookEnding');
-const bookPage = document.getElementById('bookPage');
-const floatingHearts = document.getElementById('floatingHearts');
-
-function showBookEnding(){
-  bookEnding.style.display='flex';
-
-  gsap.to(bookPage,{
-    rotateY:0,
-    duration:1.2,
-    ease:"power3.out"
-  });
-
-  spawnFloatingHearts();
-}
-
-function spawnFloatingHearts(){
+function spawnBookHearts(){
+  // spawn hearts in book continuously
   setInterval(()=>{
-    const h=document.createElement('div');
-    h.innerHTML='💗';
-    h.style.position='absolute';
-    h.style.left=Math.random()*100+'%';
-    h.style.bottom='0';
-    h.style.fontSize='20px';
-    floatingHearts.appendChild(h);
+    const h = document.createElement('div');
+    h.innerHTML = '💗';
+    h.style.position = 'absolute';
+    h.style.left = (10 + Math.random()*80) + '%';
+    h.style.bottom = '0';
+    h.style.fontSize = (12 + Math.random()*20) + 'px';
+    h.style.opacity = 0.9;
+    bookHearts.appendChild(h);
 
-    gsap.to(h,{
-      y:-300,
-      opacity:0,
-      duration:3,
-      onComplete:()=>h.remove()
-    });
-
-  },300);
+    gsap.to(h, {y:- (200 + Math.random()*220), opacity:0, duration:2.6 + Math.random()*1.2, ease:'power1.out', onComplete: ()=> h.remove()});
+  }, 280);
 }
+
+// ---------- cleanup on resize ----------
+window.addEventListener('resize', ()=> {
+  if(confettiCanvas){
+    confettiCanvas.width = innerWidth;
+    confettiCanvas.height = innerHeight;
+  }
+});
+
+// stop confetti if user navigates away quickly
+window.addEventListener('pagehide', ()=> stopConfettiNow());
+
 </script>
 </body>
 </html>
