@@ -5,228 +5,242 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>HBD oyyy 🎂</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script><style>
   :root{
-    --pink:#ff68b8;
-    --pinkSoft:#ffb6d9;
-    --blueSoft:#8fa6ff;
-    --text:#e9efff;
-    --textDim:#94a3b8;
-    --bgMain:#06060d;
-    --bgCard:#0d0d19;
-    --glass:rgba(255,255,255,0.05);
+    --accent:#ff8ac2;
+    --accent-soft:#ffd0e8;
+    --text:#e5e9f3;
+    --text-muted:#9aa4b8;
+    --bg1:#0b0d18;
+    --bg2:#0f1325;
+    --bg3:#13182f;
+    --glass:rgba(255,255,255,0.06);
   }
 
   html,body{
     height:100%;
     margin:0;
     overflow:hidden;
-    font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Arial;
-    background:linear-gradient(180deg,#03030a 0%,#0b0b18 80%);
+    font-family:Inter,system-ui,sans-serif;
+    background:linear-gradient(180deg,var(--bg1),var(--bg2) 60%,var(--bg3));
     color:var(--text);
     display:flex;
     align-items:center;
     justify-content:center;
-    touch-action:manipulation;
   }
 
-  /* ------------------------------------------------------ */
+  /* ------------------------------------------- */
+  /* GLOBAL DARK GLASS EFFECT */
+  .glass{
+    background:var(--glass);
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,0.08);
+    box-shadow:0 0 30px rgba(0,0,0,0.45);
+  }
+
+  /* ------------------------------------------- */
   /* GIFT SCREEN */
-  /* ------------------------------------------------------ */
   #giftScreen{
-    position:fixed;
-    inset:0;
-    background:linear-gradient(180deg,#050515,#0a0a1a);
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    color:var(--text);
+    position:fixed; inset:0;
+    background:radial-gradient(circle at center, #161a2f 0%, #0b0d18 100%);
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    color:white;
     z-index:9999;
     text-align:center;
+    padding:20px;
   }
-  #giftScreen h2{
-    color:var(--pinkSoft);
-    text-shadow:0 0 20px rgba(255,105,180,0.3);
-  }
+
   #giftBox{
-    width:170px;
-    height:170px;
-    border-radius:26px;
-    background:var(--bgCard);
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    width:150px; height:150px;
+    border-radius:22px;
+    display:flex; align-items:center; justify-content:center;
     font-size:50px;
     cursor:pointer;
+    background:linear-gradient(145deg,#1c2037,#0c0f1d);
+    border:2px solid rgba(255,255,255,0.07);
     box-shadow:
-      0 0 25px rgba(255,105,180,0.25),
-      0 12px 40px rgba(0,0,0,0.6);
-    border:1px solid rgba(255,255,255,0.08);
-    backdrop-filter:blur(8px);
+      inset 0 0 20px rgba(255,255,255,0.04),
+      0 8px 30px rgba(0,0,0,0.4);
+    transition:.25s;
+  }
+  #giftBox:hover{
+    transform:scale(1.06);
+    box-shadow:0 12px 40px rgba(255,138,194,0.22);
   }
 
-  /* ------------------------------------------------------ */
+  /* ------------------------------------------- */
+  /* CONFETTI */
+  #confettiCanvas{
+    position:fixed; inset:0;
+    pointer-events:none;
+    display:none;
+    z-index:9000;
+  }
+
+  /* ------------------------------------------- */
   /* COUNTDOWN */
-  /* ------------------------------------------------------ */
+  .introWrap{
+    text-align:center;
+    display:none;
+    z-index:9980;
+  }
   #countNum{
-    font-size:110px;
+    font-size:100px;
     font-weight:900;
-    color:var(--pink);
-    text-shadow:0 0 20px rgba(255,105,180,0.4);
+    color:var(--accent);
+    text-shadow:0 0 20px rgba(255,138,194,0.3);
   }
   #countText{
-    color:var(--textDim);
     font-size:18px;
+    color:var(--text-muted);
   }
 
-  /* ------------------------------------------------------ */
+  /* ------------------------------------------- */
   /* MINI GAME */
-  /* ------------------------------------------------------ */
   #miniGameScreen{
-    position:fixed;
-    inset:0;
-    background:linear-gradient(180deg,#050514,#0b0b1a);
-    display:none;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    color:var(--text);
+    position:fixed; inset:0;
+    background:linear-gradient(180deg,#0d1224,#0b0f1f);
+    display:none; flex-direction:column;
+    align-items:center; justify-content:center;
+    text-align:center;
+    color:white;
+    z-index:9998;
+    padding:16px;
   }
-  #miniGameScreen h2{
-    color:var(--pinkSoft);
-    text-shadow:0 0 15px rgba(255,105,180,0.3);
-  }
+
   #heartsArea{
-    width:100%;
-    height:70%;
-    max-width:900px;
     position:relative;
+    width:100%; height:70%;
+    max-width:920px;
     overflow:hidden;
   }
-  #heartCounter{
-    font-weight:700;
-    color:var(--pink);
+
+  /* ------------------------------------------- */
+  /* VIDEO */
+  #videoSection{
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.92);
+    justify-content:center; align-items:center;
+    z-index:9999;
   }
 
-  /* ------------------------------------------------------ */
-  /* CINEMATIC BARS */
-  /* ------------------------------------------------------ */
+  .videoContainer{
+    width:92%;
+    max-width:1100px;
+    aspect-ratio:16/9;
+    overflow:hidden;
+    border-radius:16px;
+    box-shadow:0 0 40px rgba(0,0,0,0.7);
+  }
+
+  /* ------------------------------------------- */
+  /* LETTERBOX */
   .letterbar{
-    position:fixed;
-    left:0; right:0;
+    position:fixed; left:0; right:0;
     height:0;
-    background:#000;
+    background:black;
     z-index:9985;
     pointer-events:none;
   }
 
-  /* ------------------------------------------------------ */
-  /* VIDEO SECTION */
-  /* ------------------------------------------------------ */
-  #videoSection{
-    position:fixed;
-    inset:0;
-    display:none;
-    justify-content:center;
-    align-items:center;
-    background:rgba(0,0,0,0.92);
-  }
-  .videoContainer{
-    width:95%;
-    max-width:1100px;
-    aspect-ratio:16/9;
-    overflow:hidden;
-    border-radius:14px;
-    box-shadow:0 0 30px rgba(0,0,0,0.8);
-    border:1px solid rgba(255,255,255,0.05);
-  }
-
-  /* ------------------------------------------------------ */
+  /* ------------------------------------------- */
   /* BOOK READER */
-  /* ------------------------------------------------------ */
   #bookReader{
-    position:fixed;
-    inset:0;
-    background:linear-gradient(180deg,#0a0a15,#111122);
+    position:fixed; inset:0;
+    background:linear-gradient(180deg,#101426,#0a0c14);
     display:none;
-    justify-content:center;
-    align-items:center;
-    overflow:hidden;
+    justify-content:center; align-items:center;
+    overflow:hidden; z-index:9995;
+    padding:10px;
   }
 
-  .page{
-    background:linear-gradient(180deg,#141423,#1c1c33);
-    color:var(--text);
+  #bookWrapper{
+    width:90%; max-width:1000px; height:75%;
+    perspective:1600px;
+  }
+
+  #bookOuter{
+    width:100%; height:100%;
+    transform:rotateZ(-5deg) translateX(2%);
+  }
+
+  #bookPages .page{
+    background:linear-gradient(180deg,#1a1f34,#13182b);
+    color:#e7eaf3;
     border-radius:14px;
-    box-shadow:
-      0 0 25px rgba(0,0,0,0.5),
-      inset 0 0 25px rgba(255,255,255,0.03);
+    box-shadow:0 18px 40px rgba(0,0,0,0.35);
     border:1px solid rgba(255,255,255,0.06);
+    padding:34px;
   }
-  .page-title{
-    font-size:28px;
-    margin-bottom:12px;
-    color:var(--pinkSoft);
+
+  .page .page-title{
+    font-size:26px;
+    color:var(--accent);
+    margin-bottom:10px;
+    text-shadow:0 0 10px rgba(255,138,194,0.4);
   }
-  .page-body{
-    font-size:17px;
-    color:var(--textDim);
+  .page .page-body{
+    font-size:16px;
+    color:#dce0ec;
     line-height:1.6;
   }
 
-  /* ------------------------------------------------------ */
-  /* CAPTIONS */
-  /* ------------------------------------------------------ */
+  /* ------------------------------------------- */
+  /* FLOATING CAPTION */
   .caption{
-    background:var(--glass);
-    color:var(--pinkSoft);
+    position:fixed;
+    left:50%;
+    transform:translateX(-50%);
+    top:12%;
+    background:rgba(255,255,255,0.08);
+    padding:10px 18px;
+    border-radius:999px;
+    color:var(--accent-soft);
     font-weight:700;
+    z-index:10010;
+    pointer-events:none;
+    backdrop-filter:blur(10px);
     border:1px solid rgba(255,255,255,0.05);
-    backdrop-filter:blur(8px);
-    box-shadow:0 0 20px rgba(255,105,180,0.12);
+    display:none;
+    font-size:15px;
   }
 
-  /* ------------------------------------------------------ */
-  /* SCREENSHOT THUMBNAIL */
-  /* ------------------------------------------------------ */
+  /* ------------------------------------------- */
+  /* FAKE SCREENSHOT THUMB */
   #screenshotThumb{
-    border:2px solid rgba(255,255,255,0.08);
-    background:linear-gradient(180deg,#141423,#1c1c33);
-    box-shadow:0 12px 40px rgba(0,0,0,0.7);
+    position:fixed;
+    right:20px; bottom:20px;
+    width:150px; height:90px;
+    border-radius:10px;
+    overflow:hidden;
+    background:var(--glass);
+    border:2px solid rgba(255,255,255,0.1);
+    box-shadow:0 10px 25px rgba(0,0,0,0.6);
+    display:none;
   }
 
-  /* LOADING OVERLAY */
-  #loadingOverlay{
-    background:rgba(0,0,0,0.7);
-  }
-  #progressBar{
-    background:var(--pinkSoft);
+  /* ------------------------------------------- */
+  /* OVERLAY */
+  #shotOverlay{
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.75);
+    color:white;
+    display:none;
+    justify-content:center; align-items:center;
+    font-size:20px;
   }
 
-  /* ------------------------------------------------------ */
+  /* ------------------------------------------- */
   /* RESPONSIVE */
-  /* ------------------------------------------------------ */
-  @media (max-width:600px){
-    #giftBox{
-      width:140px;
-      height:140px;
-      font-size:42px;
-    }
-    #countNum{
-      font-size:80px;
-    }
-    .page{
-      padding:26px;
-    }
-    .page-title{
-      font-size:22px;
-    }
-    #screenshotThumb{
-      width:130px;
-      height:72px;
-    }
+  @media(max-width:600px){
+    #giftBox{width:130px;height:130px;font-size:42px;}
+    #countNum{font-size:70px;}
+    .page{padding:24px !important;}
+    .page .page-title{font-size:22px;}
+    .videoContainer{width:96%;}
+    #screenshotThumb{width:130px;height:78px;}
   }
 </style>
 
