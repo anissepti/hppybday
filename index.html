@@ -581,16 +581,30 @@ bgm.muted = false;
         audioCtx.resume();
     }
 
-try {
-    bgm.muted = false;   // ← WAJIB
-    bgm.volume = 0.9;
-    bgm.currentTime = 0;
-    bgm.play().catch((err) => {
-        console.log("Audio gagal play:", err);
-    });
-} catch (e) {
-    console.log(e);
-}
+    try {
+        bgm.muted = false;
+        bgm.volume = 0.9;
+
+        // 🔥 TARUH DI SINI
+        bgm.load();     // memastikan audio siap sebelum play
+
+        // play aman
+        const p = bgm.play();
+        if (p !== undefined) {
+            p.catch(err => {
+                console.log("Retry audio:", err);
+
+                setTimeout(() => {
+                    bgm.play().catch(e => console.log("Play failed retry:", e));
+                }, 500);
+            });
+        }
+    } catch (e) {
+        console.log(e);
+    }
+
+});
+
 
             // show caption
             showCaption('aseekk di klik, Estetikan dulu gaseehh ✨ ', 1800);
