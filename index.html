@@ -57,9 +57,41 @@
 <body>
 
 <!-- COUNTDOWN -->
-<div class="introWrap" id="introWrap">
-  <div id="countNum">3</div>
-  <div id="countText">(tap layarnya dulu ya )</div>
+<!-- GIFT OPENING -->
+<div id="giftScreen" style="
+  position:fixed; inset:0; background:#0d0d1c;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  color:white; z-index:9999; text-align:center;">
+  
+  <h2 style="margin-bottom:20px; color:#ffcce0;">Ada hadiah buat kamu 🎁</h2>
+  
+  <div id="giftBox" style="
+    width:150px; height:150px; background:#ff99c8;
+    border-radius:20px; display:flex; align-items:center; justify-content:center;
+    font-size:40px; cursor:pointer;">
+    🎁
+  </div>
+
+  <p style="margin-top:15px; color:#a4b8cc;">Klik dulu kadonya ya…</p>
+</div>
+
+<!-- POLKADOT / CONFETTI -->
+<canvas id="confettiCanvas" style="
+  position:fixed; inset:0; pointer-events:none; display:none; z-index:9000;">
+</canvas>
+<!-- MINI GAME -->
+<div id="miniGameScreen" style="
+  position:fixed; inset:0; background:#0b0f22;
+  display:none; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; color:white; z-index:9998;">
+
+  <h2 style="color:#ffcce0; margin-bottom:10px;">Mini Game Dulu 😎</h2>
+  <p style="color:#a4b8cc;">Klik 10 hati sebelum mereka kabur!</p>
+
+  <div id="heartsArea" style="position:relative; width:100%; height:70%; overflow:hidden;">
+  </div>
+
+  <p id="heartCounter">0 / 10</p>
 </div>
 
 <!-- VIDEO -->
@@ -87,13 +119,30 @@
 </div>
  
 <!-- FINAL SLIDES -->
-<div id="finalWrap" class="finalwrap">
-  <div class="finalCard">
-    <h2>HBD ya om Devit, tua loo ahaha 🎉</h2>
-    <p>Ciee yang terharu abis nonton cinematic wkwk</p>
+  <div id="bookEnding" style="
+  position:fixed; inset:0; background:#ffdde4;
+  display:none; align-items:center; justify-content:center; overflow:hidden;
+  z-index:9998;">
+
+  <!-- hearts floating -->
+  <div id="floatingHearts"></div>
+
+  <!-- book -->
+  <div id="bookPage" style="
+    width:80%; max-width:600px; height:70%;
+    background:white; border-radius:10px;
+    transform-origin:left center; transform:rotateY(90deg);
+    box-shadow:0 15px 30px rgba(0,0,0,.2);
+    padding:30px; text-align:center;">
+
+    <h2 style="color:#ff66a3;">Happy Birthday Devit aka little_drax7 🎉</h2>
+    <p style="color:#555;">
+      makasih udah jadi partner balapan roblox, partner naik gunung, dan partner nyebelin harian :))
+    </p>
   </div>
 </div>
 
+  
 <div id="finalWrap2" class="finalwrap">
   <div class="finalCard">
     <h2>Kurang-kurangin tuh begadangnya. 🥹</h2>
@@ -225,6 +274,151 @@ function playFinalSlides(index){
     }});
   },6000);
 }
+// ============= GIFT OPENING =============
+const giftScreen = document.getElementById('giftScreen');
+const giftBox = document.getElementById('giftBox');
+const confettiCanvas = document.getElementById('confettiCanvas');
+const ctx = confettiCanvas.getContext('2d');
+
+giftBox.addEventListener('click', ()=>{
+  confettiCanvas.style.display = 'block';
+  startConfetti();
+
+  gsap.to(giftScreen, {opacity:0, duration:1, onComplete:()=>{
+    giftScreen.style.display = 'none';
+    startCountdown(); // PANGGIL COUNTDOWN ASLI KAMU
+  }});
+});
+
+// ============= CONFETTI POLKADOT =============
+let confettis = [];
+function startConfetti(){
+  confettiCanvas.width = innerWidth;
+  confettiCanvas.height = innerHeight;
+
+  for(let i=0;i<70;i++){
+    confettis.push({
+      x: Math.random()*innerWidth,
+      y: Math.random()*innerHeight - innerHeight,
+      r: Math.random()*8 + 4,
+      color: ['#ff99c8','#ffcce0','#ffb3d9','#ffe5ec'][Math.floor(Math.random()*4)],
+      speed: Math.random()*3 + 1
+    });
+  }
+  animateConfetti();
+}
+
+function animateConfetti(){
+  ctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+  confettis.forEach(c=>{
+    ctx.beginPath();
+    ctx.arc(c.x, c.y, c.r, 0, Math.PI*2);
+    ctx.fillStyle=c.color;
+    ctx.fill();
+    c.y+=c.speed;
+    if(c.y > innerHeight+20) c.y = -20;
+  });
+  requestAnimationFrame(animateConfetti);
+}
+
+// ============= MINI GAME HATI =============
+const miniGameScreen = document.getElementById('miniGameScreen');
+const heartsArea = document.getElementById('heartsArea');
+const heartCounter = document.getElementById('heartCounter');
+
+let hit = 0;
+
+function startMiniGame(){
+  miniGameScreen.style.display = 'flex';
+  spawnHeart();
+}
+
+function spawnHeart(){
+  for(let i=0;i<10;i++){
+    const h = document.createElement('div');
+    h.innerHTML = '❤️';
+    h.style.position = 'absolute';
+    h.style.left = Math.random()*80 + '%';
+    h.style.top = Math.random()*80 + '%';
+    h.style.fontSize = '30px';
+    h.style.cursor = 'pointer';
+
+    h.addEventListener('click', ()=>{
+      hit++;
+      heartCounter.textContent = hit + ' / 10';
+      h.remove();
+      if(hit >= 10){
+        endMiniGame();
+      }
+    });
+
+    heartsArea.appendChild(h);
+
+    // hearts slowly move
+    gsap.to(h, {
+      x: (Math.random()*100)-50,
+      y: (Math.random()*100)-50,
+      duration: 2,
+      repeat: -1,
+      yoyo: true
+    });
+  }
+}
+
+function endMiniGame(){
+  gsap.to(miniGameScreen, {opacity:0, duration:1, onComplete:()=>{
+    miniGameScreen.style.display='none';
+    // lanjut ke VIDEO
+    startVideo(); 
+  }});
+}
+
+// Integrasi: Setelah countdown selesai → JANGAN startVideo() langsung
+// Tapi ganti:
+// startMiniGame()
+
+// ============= ENDING BOOK PAGE =============
+const bookEnding = document.getElementById('bookEnding');
+const bookPage = document.getElementById('bookPage');
+const floatingHearts = document.getElementById('floatingHearts');
+
+function showBookEnding(){
+  bookEnding.style.display = 'flex';
+
+  // buka halaman buku
+  gsap.to(bookPage, {
+    rotateY:0,
+    duration:1.2,
+    ease:"power3.out"
+  });
+
+  // floating hearts
+  spawnFloatingHearts();
+}
+
+function spawnFloatingHearts(){
+  setInterval(()=>{
+    const h = document.createElement('div');
+    h.innerHTML = '💗';
+    h.style.position='absolute';
+    h.style.left = Math.random()*100 + '%';
+    h.style.bottom = '0';
+    h.style.fontSize='20px';
+    h.style.opacity = 0.8;
+
+    floatingHearts.appendChild(h);
+
+    gsap.to(h,{
+      y:-300,
+      opacity:0,
+      duration:3,
+      onComplete:()=>h.remove()
+    });
+  },300);
+}
+
+// Integrasi: setelah SLIDE terakhir → panggil:
+// showBookEnding();
 
 </script>
 </body>
