@@ -40,6 +40,9 @@
   #videoSection{display:none; position:fixed;inset:0; background:rgba(0,0,0,0.92); justify-content:center;align-items:center; z-index:9970;}
   .videoContainer{width:92%; max-width:1100px; aspect-ratio:16/9; overflow:hidden; border-radius:14px; box-shadow:0 0 50px rgba(0,0,0,0.6);}
   #introVideo{width:100%;height:100%;object-fit:cover; display:block; border-radius:10px;}
+#videoSection {
+    z-index: 10020; /* supaya paling atas */
+}
 
   /* cinematic letterbox bars */
   .letterbar{position:fixed; left:0; right:0; height:0; background:black; z-index:9985; pointer-events:none;}
@@ -72,6 +75,9 @@
   }
   .page .page-title{font-size:28px;color:#ff4f9a;margin-bottom:8px; transform:rotate(-4deg); /* tilted text */ }
   .page .page-body{font-size:16px;color:#333; line-height:1.5; transform:rotate(-4deg);}
+.page {
+  z-index: 1;
+}
 
   /* hearts inside book */
   #bookHearts{position:absolute; inset:0; pointer-events:none; z-index:2;}
@@ -469,7 +475,26 @@ async function autoScreenshotMoment(){
   // simulate process
   await wait(1100);
   // show little thumbnail preview (fake)
-  screenshotThumb.style.display = 'block';
+  // Munculkan thumbnail di atas, bukan hanya fixed di bawah
+screenshotThumb.style.bottom = "-120px";
+screenshotThumb.style.display = "block";
+
+gsap.to(screenshotThumb, {
+    bottom: "18px",
+    duration: 0.6,
+    ease: "power3.out"
+});
+
+// auto-hide
+setTimeout(() => {
+    gsap.to(screenshotThumb, {
+        bottom: "-120px",
+        duration: 0.6,
+        ease: "power3.in",
+        onComplete: () => { screenshotThumb.style.display = "none"; }
+    });
+}, 2300);
+
   screenshotThumb.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#7a1237;">Saved</div>';
   // small flash
   const flash = document.createElement('div');
@@ -510,16 +535,26 @@ async function cinematicOpenThenPlayVideo(){
   gsap.to(bgm, {volume:0.2, duration:0.8});
   try{ await introVideo.play(); }catch(e){}
   // when video ends, bars open again to reveal book
-  introVideo.addEventListener('ended', async ()=>{
-    gsap.to(videoSection, {opacity:0, duration:0.8, onComplete: ()=> videoSection.style.display='none'});
-    // small reveal: open bars (short)
-    gsap.to([barTop, barBottom], {height:'0vh', duration:0.8, ease:'power3.inOut'});
-    // stop bgm completely
-    gsap.to(bgm, {volume:0, duration:1.2, onComplete: ()=> { try{ bgm.pause(); bgm.currentTime=0;}catch(e){} }});
-    // start book reader after short pause
-    await wait(700);
-    startBookReader();
-  }, { once:true });
+ // EVENT: ketika video selesai
+introVideo.addEventListener('ended', async function () {
+
+    // 1. Tutup video section
+    gsap.to(videoSection, {
+        opacity: 0,
+        duration: 0.8,
+        onComplete: () => {
+            videoSection.style.display = "none";
+        }
+    });
+
+    // 2. Buka book reader
+    await wait(300);
+    bookReader.style.display = "flex";
+
+    // 3. Mulai animasi halaman buku
+    startBookAnimation();
+});
+, { once:true });
 }
 
 // ------------------ BOOK READER auto flip (tilt right ~15deg) ------------------
@@ -577,6 +612,29 @@ window.addEventListener('resize', ()=>{
 
 // stop confetti if leaving
 window.addEventListener('pagehide', ()=> stopConfettiNow());
+let currentPage = 0;
+
+async function startBookFlip() {
+    bookReader.style.display = "flex";
+
+    for (let i = 0; i < bookPages.length; i++) {
+        const p = bookPages[i];
+
+        // pastikan urutan halaman
+        p.style.zIndex = 100 - i;
+
+        await wait(600);
+
+        gsap.to(p, {
+            rotateY: 0,
+            duration: 1,
+            ease: "power3.inOut"
+        });
+
+        // halaman berikutnya muncul setelah flip
+        await wait(300);
+    }
+}
 
 </script>
 </body>
