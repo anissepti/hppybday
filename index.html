@@ -438,7 +438,6 @@ function createMovingHeart(){
         miniGameScreen.style.display='none';
         // Do fake auto-screenshot moment (cute loading), cinematic letterbox, then start video
         (async()=>{
-          await autoScreenshotMoment();
           await cinematicOpenThenPlayVideo();
         })();
       }});
@@ -524,37 +523,51 @@ async function cinematicOpenThenPlayVideo(){
 }
 
 // ------------------ BOOK READER auto flip (tilt right ~15deg) ------------------
-function startBookReader(){
+function startBookReader() {
   // prepare pages: rotateY 90deg -> will flip to 0
   bookReader.style.display='flex';
 
-  // set initial transform for tilt right: we'll rotate bookOuter a bit to mimic tilt right 15deg
-  gsap.set('#bookOuter', {rotateZ:-6}); // subtle skew kept in CSS
-  // set pages initial
+  gsap.set('#bookOuter', {rotateZ:-6});
+
   bookPages.forEach((p,i)=>{
     gsap.set(p, {rotateY:90, z:0, transformOrigin:'left center'});
     p.style.zIndex = bookPages.length - i;
-    // tilt text inside slightly right visually by CSS rotate(-4deg)
   });
 
-  // auto flip with timer; ensure none skipped by chaining promises
   (async function flipSequence(){
     for(let i=0;i<bookPages.length;i++){
-      // small pre-caption for each page
+
+      // **TUTUP PAGE SEBELUMNYA DULU**
+      if (i > 0) {
+        gsap.to(bookPages[i-1], {
+          rotateY:-90,
+          duration:1.1,
+          ease:'power3.in'
+        });
+      }
+
+      // caption tiap halaman
       showCaption(`Membuka halaman ${i+1} ...`, 950);
-      // flip (rotateY 0)
+
+      // buka halaman sekarang
       await new Promise(res=>{
-        gsap.to(bookPages[i], {rotateY:0, duration:1.15, ease:'power3.out', onComplete: res});
+        gsap.to(bookPages[i], {
+          rotateY:0,
+          duration:1.50,
+          ease:'power3.out',
+          onComplete: res
+        });
       });
-      // keep page visible for configurable time
+
+      // waktu baca
       await wait(2400);
     }
-    // after all pages, keep floating hearts
+
     spawnBookHearts();
-    // show final caption
     showCaption('Selesai — HBD lagi! 🎉', 2200);
   })();
 }
+
 
 // spawn hearts floating inside book
 function spawnBookHearts(){
