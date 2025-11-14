@@ -575,17 +575,15 @@ bgm.muted = false;
         }
 
         // gift click -> confetti + music -> hide gift -> caption -> countdown
-        giftBox.addEventListener('click', async function onClick() {
-          if (audioCtx.state === "suspended") {
+    giftBox.addEventListener('click', async function onClick() {
+    if (audioCtx.state === "suspended") {
         audioCtx.resume();
     }
 
     try {
         bgm.muted = false;
         bgm.volume = 0.9;
-
-        // ⬇⬇⬇ INI TEMPAT PALING BENAR ⬇⬇⬇
-        bgm.load();   // pastikan bisa play di semua device
+        bgm.load();
 
         const p = bgm.play();
         if (p !== undefined) {
@@ -600,43 +598,33 @@ bgm.muted = false;
         console.log(e);
     }
 
-});
+    // show caption
+    showCaption('aseekk di klik, Estetikan dulu gaseehh ✨ ', 1800);
+    confettiCanvas.style.display = 'block';
+    startConfetti();
 
+    beep(880, 0.06, 0.02);
 
-            // show caption
-            showCaption('aseekk di klik, Estetikan dulu gaseehh ✨ ', 1800);
-            confettiCanvas.style.display = 'block';
-            startConfetti();
-            // small pop sfx
-            beep(880, 0.06, 0.02);
-            gsap.fromTo(giftBox, {
-                scale: 1
-            }, {
-                scale: 1.08,
-                duration: 0.12,
-                yoyo: true,
-                repeat: 1
-            });
-            // animate gift out
-            await wait(700);
-            gsap.to(giftScreen, {
-                opacity: 0,
-                duration: 0.9
-            });
-            await wait(900);
-            giftScreen.style.display = 'none';
-            // small pause to let confetti flow
-            showCaption('', 1000);
-            await wait(800);
-            // show countdown
-            introWrap.style.display = 'block';
-            await runCountdown(); // returns after countdown ended
-            // continue to mini game
-            await wait(260);
-            startMiniGame();
-        }, {
-            once: true
-        });
+    gsap.fromTo(giftBox,
+        { scale: 1 },
+        { scale: 1.08, duration: 0.12, yoyo: true, repeat: 1 }
+    );
+
+    await wait(700);
+
+    gsap.to(giftScreen, { opacity: 0, duration: 0.9 });
+    await wait(900);
+    giftScreen.style.display = 'none';
+
+    await wait(800);
+    introWrap.style.display = 'block';
+
+    await runCountdown();
+    await wait(260);
+
+    startMiniGame();
+}, { once: true }); // <-- satu-satunya penutup yg benar
+
 
         // COUNTDOWN returning promise
         function runCountdown() {
