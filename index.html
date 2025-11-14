@@ -4,107 +4,232 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Untuk Kamu — Spesial Ulang Tahun 🎂</title>
+<title>HBD oyyy 🎂</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <style>
   :root{
-    --accent:#ffcce0;
-    --muted:#9fb6c9;
-    --text:#0b1220;
-    --bg:#060616;
+    --pink:#ff68b8;
+    --pinkSoft:#ffb6d9;
+    --blueSoft:#8fa6ff;
+    --text:#e9efff;
+    --textDim:#94a3b8;
+    --bgMain:#06060d;
+    --bgCard:#0d0d19;
+    --glass:rgba(255,255,255,0.05);
   }
+
   html,body{
-    height:100%;margin:0;overflow:hidden;
+    height:100%;
+    margin:0;
+    overflow:hidden;
     font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Arial;
-    background:linear-gradient(180deg,#050517 0%,#0c132b 65%);
+    background:linear-gradient(180deg,#03030a 0%,#0b0b18 80%);
     color:var(--text);
-    display:flex;align-items:center;justify-content:center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    touch-action:manipulation;
   }
 
-  /* GIFT */
-  #giftScreen{position:fixed; inset:0; background:#0d0d1c; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; z-index:9999; text-align:center;}
-  #giftBox{width:160px; height:160px;  border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:44px; cursor:pointer; box-shadow:0 10px 40px rgba(0,0,0,0.5); transform-origin:center center;}
-
-  /* CONFETTI CANVAS */
-  #confettiCanvas{position:fixed; inset:0; pointer-events:none; display:none; z-index:9000;}
-
-  /* COUNTDOWN */
-  .introWrap{text-align:center; display:none; z-index:9980;}
-  #countNum{font-size:92px;font-weight:900;color:var(--accent);margin:0;}
-  #countText{font-size:16px;color:#a4b8cc;margin-top:8px;}
-
-  /* MINI GAME */
-  #miniGameScreen{position:fixed; inset:0; background:linear-gradient(180deg,#071029,#061227); display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:white; z-index:9998;}
-  #heartsArea{position:relative; width:100%; height:70%; overflow:hidden; max-width:920px;}
-
-  /* VIDEO */
-  #videoSection{display:none; position:fixed;inset:0; background:rgba(0,0,0,0.92); justify-content:center;align-items:center; z-index:9999;}
-  .videoContainer{width:92%; max-width:1100px; aspect-ratio:16/9; overflow:hidden; border-radius:14px; box-shadow:0 0 50px rgba(0,0,0,0.6);}
-  #introVideo{width:100%;height:100%;object-fit:cover; display:block; border-radius:10px;}
-
-  /* cinematic letterbox bars */
-  .letterbar{position:fixed; left:0; right:0; height:0; background:black; z-index:9985; pointer-events:none;}
-  #barTop{top:0;}
-  #barBottom{bottom:0;}
-
-  /* BOOK READER */
-  #bookReader{position:fixed; inset:0; background:linear-gradient(180deg,#fff1f6,#ffeef8); display:none; justify-content:center; align-items:center; overflow:hidden; z-index:9995;}
-  #bookWrapper{width:86%; max-width:1000px; height:74%; perspective:1600px; position:relative; transform:translateY(-2%);}
-  #bookOuter{position:relative; width:100%; height:100%; transform:rotateZ(-6deg) translateX(2%);} /* tilt whole book right ~6deg */
-  #bookPages{position:absolute; inset:0; transform-style:preserve-3d;}
-  .page{
-    position:absolute;
+  /* ------------------------------------------------------ */
+  /* GIFT SCREEN */
+  /* ------------------------------------------------------ */
+  #giftScreen{
+    position:fixed;
     inset:0;
-    margin:auto;
-    width:92%;
-    height:88%;
-    background:white;
-    border-radius:12px;
-    box-shadow:0 20px 50px rgba(7,10,18,0.25);
-    padding:36px;
-    text-align:left;
-    backface-visibility:hidden;
-    transform-origin:left center;
-    transform:rotateY(90deg) translateZ(0);
+    background:linear-gradient(180deg,#050515,#0a0a1a);
     display:flex;
     flex-direction:column;
+    align-items:center;
     justify-content:center;
+    color:var(--text);
+    z-index:9999;
+    text-align:center;
+  }
+  #giftScreen h2{
+    color:var(--pinkSoft);
+    text-shadow:0 0 20px rgba(255,105,180,0.3);
+  }
+  #giftBox{
+    width:170px;
+    height:170px;
+    border-radius:26px;
+    background:var(--bgCard);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:50px;
+    cursor:pointer;
+    box-shadow:
+      0 0 25px rgba(255,105,180,0.25),
+      0 12px 40px rgba(0,0,0,0.6);
+    border:1px solid rgba(255,255,255,0.08);
+    backdrop-filter:blur(8px);
+  }
+
+  /* ------------------------------------------------------ */
+  /* COUNTDOWN */
+  /* ------------------------------------------------------ */
+  #countNum{
+    font-size:110px;
+    font-weight:900;
+    color:var(--pink);
+    text-shadow:0 0 20px rgba(255,105,180,0.4);
+  }
+  #countText{
+    color:var(--textDim);
+    font-size:18px;
+  }
+
+  /* ------------------------------------------------------ */
+  /* MINI GAME */
+  /* ------------------------------------------------------ */
+  #miniGameScreen{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(180deg,#050514,#0b0b1a);
+    display:none;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    color:var(--text);
+  }
+  #miniGameScreen h2{
+    color:var(--pinkSoft);
+    text-shadow:0 0 15px rgba(255,105,180,0.3);
+  }
+  #heartsArea{
+    width:100%;
+    height:70%;
+    max-width:900px;
+    position:relative;
     overflow:hidden;
   }
-  .page .page-title{font-size:28px;color:#ff4f9a;margin-bottom:8px; transform:rotate(-4deg); /* tilted text */ }
-  .page .page-body{font-size:16px;color:#333; line-height:1.5; transform:rotate(-4deg);}
-
-  /* hearts inside book */
-  #bookHearts{position:absolute; inset:0; pointer-events:none; z-index:2;}
-
-  /* Floating captions */
-  .caption{
-    position:fixed;
-    left:50%;
-    transform:translateX(-50%);
-    top:12%;
-    background:rgba(255,255,255,0.06);
-    padding:8px 14px;
-    border-radius:999px;
-    color:#ffd5e9;
+  #heartCounter{
     font-weight:700;
-    z-index:10010;
-    pointer-events:none;
-    backdrop-filter: blur(6px);
-    border:1px solid rgba(255,255,255,0.04);
-    display:none;
+    color:var(--pink);
   }
 
-  /* fake screenshot thumbnail */
-  #screenshotThumb{position:fixed; right:18px; bottom:18px; width:160px; height:90px; border-radius:8px; overflow:hidden; box-shadow:0 12px 30px rgba(0,0,0,0.6); background:linear-gradient(180deg,#fff0f8,#ffe6f2); z-index:10012; display:none; border:3px solid rgba(255,255,255,0.2);}
+  /* ------------------------------------------------------ */
+  /* CINEMATIC BARS */
+  /* ------------------------------------------------------ */
+  .letterbar{
+    position:fixed;
+    left:0; right:0;
+    height:0;
+    background:#000;
+    z-index:9985;
+    pointer-events:none;
+  }
 
-  /* loading overlay for fake screenshot */
-  #shotOverlay{position:fixed; inset:0; background:rgba(0,0,0,0.65); display:none; align-items:center; justify-content:center; z-index:10011; color:white;}
+  /* ------------------------------------------------------ */
+  /* VIDEO SECTION */
+  /* ------------------------------------------------------ */
+  #videoSection{
+    position:fixed;
+    inset:0;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    background:rgba(0,0,0,0.92);
+  }
+  .videoContainer{
+    width:95%;
+    max-width:1100px;
+    aspect-ratio:16/9;
+    overflow:hidden;
+    border-radius:14px;
+    box-shadow:0 0 30px rgba(0,0,0,0.8);
+    border:1px solid rgba(255,255,255,0.05);
+  }
 
-  /* small util */
-  .muted{color:#9fb6c9;}
-  .centered{display:flex;align-items:center;justify-content:center;}
+  /* ------------------------------------------------------ */
+  /* BOOK READER */
+  /* ------------------------------------------------------ */
+  #bookReader{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(180deg,#0a0a15,#111122);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+  }
+
+  .page{
+    background:linear-gradient(180deg,#141423,#1c1c33);
+    color:var(--text);
+    border-radius:14px;
+    box-shadow:
+      0 0 25px rgba(0,0,0,0.5),
+      inset 0 0 25px rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.06);
+  }
+  .page-title{
+    font-size:28px;
+    margin-bottom:12px;
+    color:var(--pinkSoft);
+  }
+  .page-body{
+    font-size:17px;
+    color:var(--textDim);
+    line-height:1.6;
+  }
+
+  /* ------------------------------------------------------ */
+  /* CAPTIONS */
+  /* ------------------------------------------------------ */
+  .caption{
+    background:var(--glass);
+    color:var(--pinkSoft);
+    font-weight:700;
+    border:1px solid rgba(255,255,255,0.05);
+    backdrop-filter:blur(8px);
+    box-shadow:0 0 20px rgba(255,105,180,0.12);
+  }
+
+  /* ------------------------------------------------------ */
+  /* SCREENSHOT THUMBNAIL */
+  /* ------------------------------------------------------ */
+  #screenshotThumb{
+    border:2px solid rgba(255,255,255,0.08);
+    background:linear-gradient(180deg,#141423,#1c1c33);
+    box-shadow:0 12px 40px rgba(0,0,0,0.7);
+  }
+
+  /* LOADING OVERLAY */
+  #loadingOverlay{
+    background:rgba(0,0,0,0.7);
+  }
+  #progressBar{
+    background:var(--pinkSoft);
+  }
+
+  /* ------------------------------------------------------ */
+  /* RESPONSIVE */
+  /* ------------------------------------------------------ */
+  @media (max-width:600px){
+    #giftBox{
+      width:140px;
+      height:140px;
+      font-size:42px;
+    }
+    #countNum{
+      font-size:80px;
+    }
+    .page{
+      padding:26px;
+    }
+    .page-title{
+      font-size:22px;
+    }
+    #screenshotThumb{
+      width:130px;
+      height:72px;
+    }
+  }
 </style>
+
 </head>
 <body>
 
@@ -113,7 +238,7 @@
 
 <!-- GIFT SCREEN -->
 <div id="giftScreen">
-  <h2 style="margin-bottom:18px;color:#ffcce0">Ada hadiah buat kamu 🎁</h2>
+  <h2 style="margin-bottom:18px;color:#ffcce0">Ada hadiah buat kamu</h2>
   <div id="giftBox" role="button" aria-label="Buka Kado">🎁</div>
   <p style="margin-top:14px;color:#a4b8cc">Klik dulu kadonya ya…</p>
 </div>
@@ -357,7 +482,7 @@ giftBox.addEventListener('click', async function onClick(){
   // unlock audio on user gesture
   try{ bgm.volume = 0.9; bgm.play().catch(()=>{}); }catch(e){}
   // show caption
-  showCaption('Wuhuu! Buka kadonya 🎁', 1600);
+  showCaption('kadonya nihh 🎁', 1600);
   confettiCanvas.style.display = 'block';
   startConfetti();
   // small pop sfx
@@ -369,7 +494,7 @@ giftBox.addEventListener('click', async function onClick(){
   await wait(900);
   giftScreen.style.display='none';
   // small pause to let confetti flow
-  showCaption('Confetti polkadot! ✨', 1000);
+  showCaption('Estetikan dulu gaseehh ✨', 1000);
   await wait(800);
   // show countdown
   introWrap.style.display='block';
@@ -547,7 +672,7 @@ function startBookReader() {
       }
 
       // caption tiap halaman
-      showCaption(`Membuka halaman ${i+1} ...`, 950);
+      showCaption(` ${i+1} ...`, 950);
 
       // buka halaman sekarang
       await new Promise(res=>{
@@ -564,7 +689,7 @@ function startBookReader() {
     }
 
     spawnBookHearts();
-    showCaption('Selesai — HBD lagi! 🎉', 2200);
+    showCaption('Dahhh selesaii! 🎉', 2200);
   })();
 }
 
