@@ -581,19 +581,11 @@ bgm.muted = false;
     }
 
     try {
-        bgm.muted = false;
-        bgm.volume = 0.9;
-        bgm.load();
+    bgm.muted = false;
+bgm.volume = 0.9;
+// hanya load, jangan play
+bgm.load();
 
-        const p = bgm.play();
-        if (p !== undefined) {
-            p.catch(err => {
-                console.log("Retry audio:", err);
-                setTimeout(() => {
-                    bgm.play().catch(e => console.log("Play failed retry:", e));
-                }, 500);
-            });
-        }
     } catch (e) {
         console.log(e);
     }
@@ -865,12 +857,12 @@ bgm.muted = false;
         function startBookReader() {
             // prepare pages: rotateY 90deg -> will flip to 0
             bookReader.style.display = 'flex';
+// setelah video selesai → saat masuk ke bookReader
+bgm.play().catch(e => console.log("Audio blocked:", e));
 
             gsap.set('#bookOuter', {
                 rotateZ: -6
             });
-ensureBgm();
-
             bookPages.forEach((p, i) => {
                 gsap.set(p, {
                     rotateY: 90,
