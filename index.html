@@ -429,6 +429,7 @@ display:none;
 </audio>
 
 
+
     <script>
         // ------------------ Elements ------------------
         const giftBox = document.getElementById('giftBox');
@@ -894,58 +895,39 @@ bgm.play().catch(e => console.log("Audio blocked:", e));
             gsap.set('#bookOuter', {
                 rotateZ: -6
             });
-      bookPages.forEach((p,i)=>{
+            bookPages.forEach((p, i) => {
+                gsap.set(p, {
+                    rotateY: 90,
+                    z: 0,
+                    transformOrigin: 'left center'
+                });
+                p.style.zIndex = bookPages.length - i;
+            });
 
-    gsap.set(p,{
-        rotateY:0,
-        x:i * 2,
-        y:i * 2,
-        transformOrigin:'left center'
-    });
-
-    p.style.zIndex =
-        bookPages.length - i;
-
-});
             (async function flipSequence() {
                 for (let i = 0; i < bookPages.length; i++) {
 
                     // **TUTUP PAGE SEBELUMNYA DULU**
                     if (i > 0) {
-                    gsap.to(bookPages[i],{
-    rotateY:-180,
-    duration:1.4,
-    ease:"power2.inOut"
-});
+                        gsap.to(bookPages[i - 1], {
+                            rotateY: -90,
+                            duration: 4.7,
+                            ease: 'power3.in'
+                        });
                     }
 
                     // caption tiap halaman
                     showCaption(` ${i+1} ...`, 950);
 
                     // buka halaman sekarang
-              await new Promise(res => {
-
-    gsap.to(bookPages[i],{
-        rotateY:-180,
-        x:-40,
-        duration:1.5,
-        ease:"power2.inOut",
-
-        onUpdate:function(){
-
-            const progress = this.progress();
-
-            bookPages[i].style.boxShadow =
-            `0 20px 60px rgba(0,0,0,${
-                0.10 + progress * 0.25
-            })`;
-
-        },
-
-        onComplete:res
-    });
-
-});
+                    await new Promise(res => {
+                        gsap.to(bookPages[i], {
+                            rotateY: 0,
+                            duration: 4.70,
+                            ease: 'power3.out',
+                            onComplete: res
+                        });
+                    });
 
                     // waktu baca
                     await wait(2400);
@@ -993,7 +975,7 @@ bgm.play().catch(e => console.log("Audio blocked:", e));
     });
 }
 
-        
+
     </script>
 </body>
 
